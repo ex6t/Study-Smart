@@ -13,7 +13,7 @@ from PyQt6.QtCore import Qt  # used for center alignment flag
 
 # sorry josh i bummed all the code off you
 
-class RegisterView(QWidget):
+class LoginView(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -30,7 +30,7 @@ class RegisterView(QWidget):
         layout.setSpacing(15)
         layout.setContentsMargins(400, 150, 400, 150)
 
-        # Register Title - Create Account Centered and Large
+        # Login Title - Create Account Centered and Large
         title = QLabel("Login")
         title_font = QFont()
         title_font.setPointSize(24)
@@ -93,7 +93,7 @@ class RegisterView(QWidget):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    window = RegisterView()
+    window = LoginView()
     window.show()
 
     sys.exit(app.exec())
