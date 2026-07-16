@@ -4,6 +4,8 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QPushButton,
     QVBoxLayout, QHBoxLayout
 )
+from register_screen import RegisterWindow
+from login_screen import LoginView
  
  
 class WelcomeWindow(QMainWindow):
@@ -30,7 +32,9 @@ class WelcomeWindow(QMainWindow):
         # Buttons row
         button_row = QHBoxLayout() #stack widgets side by side (left to right)
         self.signup_button = QPushButton("Sign Up") #clickable button
+        self.signup_button.clicked.connect(self.open_register)
         self.login_button = QPushButton("Log In") #clickable button
+        self.login_button.clicked.connect(self.open_login)
 
         #button customization
 
@@ -57,6 +61,14 @@ class WelcomeWindow(QMainWindow):
         main_layout.addLayout(button_row)#add the whole button row below the text 
  
         # Buttons don't do anything yet - functionality added later
+    def open_register(self):
+        self.register = RegisterWindow()
+        self.register.show()
+        self.close()
+    def open_login(self):
+        self.login = LoginView()
+        self.login.show()
+        self.close()
  
  
 if __name__ == "__main__": #only run the code if someone is running this file directly 

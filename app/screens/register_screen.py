@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QFont #used for font control
 from PyQt6.QtCore import Qt #used for center alignment flag
 
-class RegisterView(QWidget):
+class RegisterWindow(QWidget):
     def __init__(self):
         super().__init__()
 
