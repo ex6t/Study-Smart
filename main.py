@@ -6,6 +6,7 @@
 import sys
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
+from app.screens.frontpageFE import WelcomeWindow
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -15,7 +16,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(button)
 
 app = QApplication(sys.argv)
-window = MainWindow()
+window = WelcomeWindow()
 window.show()
 app.exec()
 
