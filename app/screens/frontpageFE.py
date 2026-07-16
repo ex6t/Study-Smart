@@ -4,8 +4,8 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QPushButton,
     QVBoxLayout, QHBoxLayout
 )
-from register_screen import RegisterWindow
-from login_screen import LoginView
+from app.screens.register_screen import RegisterWindow
+from app.screens.login_screen import LoginView
  
  
 class WelcomeWindow(QMainWindow):
