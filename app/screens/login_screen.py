@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QFont  # used for font control
 from PyQt6.QtCore import Qt  # used for center alignment flag
-from register_screen import RegisterWindow
+from app.screens.register_screen import RegisterWindow
 
 # sorry josh i bummed all the code off you
 
