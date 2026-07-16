@@ -41,11 +41,13 @@ class LoginView(QWidget):
         # Username label
         username_label = QLabel("Username")
         self.username_input = QLineEdit()
+        self.username_input.setMaxLength(16)
 
         # Password Input Box - Will show up hidden as user types
         # removed max length checks, feels redundant otherwise
         password_label = QLabel("Password")
         self.password_input = QLineEdit()
+        self.password_input.setMaxLength(20)
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
 
         # login button
