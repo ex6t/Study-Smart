@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QFont  # used for font control
 from PyQt6.QtCore import Qt  # used for center alignment flag
+from app.screens.register_screen import RegisterWindow
 
 # sorry josh i bummed all the code off you
 
@@ -64,6 +65,7 @@ class LoginView(QWidget):
         # linking these two screens should probably be one user story, tbh
         self.register_button = QPushButton("Sign Up")
         self.register_button.setFixedSize(150, 30)
+        self.register_button.clicked.connect(self.open_register)
 
         # ----Add everything to Vertical layout widget------
 
@@ -91,6 +93,10 @@ class LoginView(QWidget):
 
         self.setLayout(layout)
 
+    def open_register(self):
+        self.register = RegisterWindow()
+        self.register.show()
+        self.close()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
