@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import (QWidget, QFrame, QVBoxLayout, QPushButton, QLabel)
 from PyQt6.QtCore import Qt
 
-
 class SidebarWidget(QWidget):
 
     SIDEBAR_WIDTH = 280
@@ -13,7 +12,6 @@ class SidebarWidget(QWidget):
 
     def create_sidebar_button(self, text):
         """Creates a sidebar button with consistent styling."""
-
         button = QPushButton(text)
         button.setFixedHeight(50)
 
@@ -60,10 +58,10 @@ class SidebarWidget(QWidget):
         sidebar_layout.setContentsMargins(20, 20, 20, 20)
         sidebar_layout.setSpacing(15)
 
+    
         # Title
         self.title = QLabel("Study Smart")
         self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
         self.title.setStyleSheet("""
             font-size: 22px;
             font-weight: bold;
@@ -82,6 +80,7 @@ class SidebarWidget(QWidget):
 
         # Push Settings button to bottom
         sidebar_layout.addStretch()
+
 
         # Settings Button
         self.settings_button = self.create_sidebar_button("Settings")
