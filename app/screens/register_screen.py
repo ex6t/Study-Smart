@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QFont #used for font control
 from PyQt6.QtCore import Qt #used for center alignment flag
+from app.database.database import (register_user, username_exists)
 
 class RegisterView(QWidget):
     def __init__(self):
@@ -56,6 +57,7 @@ class RegisterView(QWidget):
 
         #Register Button - no action yet
         self.register_button = QPushButton("Sign Up")
+        self.register_button.clicked.connect(self.register_check)
 
         #Error / Success Message - use for later
         self.message_label = QLabel("")
@@ -82,6 +84,57 @@ class RegisterView(QWidget):
         layout.addStretch()
 
         self.setLayout(layout)
+
+    def register_check(self):
+        username = self.username_input.text().strip()
+        password = self.password_input.text()
+        confirm_password = self.confirm_password_input.text()
+
+        if username == "":
+            self.message_label.setText(
+                "Please enter a username."
+            )
+            return
+        if len(username) < 3:
+            self.message_label.setText(
+                "Username must be 3 or more characters."
+            )
+            return
+
+        if password == "":
+            self.message_label.setText(
+                "Please enter a password."
+            )
+            return
+        if len(password) < 8:
+            self.message_label.setText(
+                "Password must be at least 8 characters."
+            )
+            return
+
+        if password != confirm_password:
+            self.message_label.setText(
+                "Passwords do not match."
+            )
+            return
+        if username_exists(username):
+            self.message_label.setText(
+                "This username already exists."
+            )
+            return
+        
+        #save user in database
+        success, message = register_user(
+            username,
+            password,
+        )
+
+        self.message_label.setText(message)
+
+        if success:
+            self.username_input.clear()
+            self.password_input.clear()
+            self.confirm_password_input.clear()
 
     
 if __name__ == "__main__":
