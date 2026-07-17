@@ -12,7 +12,7 @@ from PyQt6.QtGui import QFont #used for font control
 from PyQt6.QtCore import Qt #used for center alignment flag
 from app.database.database import (register_user, username_exists)
 
-class RegisterView(QWidget):
+class RegisterWindow(QWidget):
     def __init__(self):
         super().__init__()
 
