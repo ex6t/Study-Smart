@@ -6,6 +6,8 @@ class Dashboard(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Study Smart - Dashboard")
+        self.resize(1200, 800)
         self.setup_ui()
 
 

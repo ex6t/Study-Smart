@@ -11,8 +11,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QFont  # used for font control
 from PyQt6.QtCore import Qt  # used for center alignment flag
 from app.screens.register_screen import RegisterWindow
-
-# sorry josh i bummed all the code off you
+from app.screens.dashboard_screen import Dashboard
+from app.database.database import login_user
 
 class LoginView(QWidget):
     def __init__(self):
@@ -53,6 +53,7 @@ class LoginView(QWidget):
 
         # login button
         self.login_button = QPushButton("Login")
+        self.login_button.clicked.connect(self.login_check)
 
         # Error / Success Message - use for later
         self.message_label = QLabel("")
@@ -61,8 +62,6 @@ class LoginView(QWidget):
         # not sure how we would do this without an actual web service, but seems almost mandatory
         # self.forgot_password_button = QPushButton("Forgot password?")
 
-        # will redirect to register_screen later.
-        # linking these two screens should probably be one user story, tbh
         self.register_button = QPushButton("Sign Up")
         self.register_button.setFixedSize(150, 30)
         self.register_button.clicked.connect(self.open_register)
@@ -96,6 +95,21 @@ class LoginView(QWidget):
     def open_register(self):
         self.register = RegisterWindow()
         self.register.show()
+        self.close()
+
+
+    def login_check(self):
+        username = self.username_input.text()
+        password = self.password_input.text()
+        success, return_message = login_user(username, password)
+
+        self.message_label.setText(return_message)
+        if success:
+            self.login_redirect()
+
+    def login_redirect(self):
+        self.screen = Dashboard()
+        self.screen.show()
         self.close()
 
 if __name__ == "__main__":
