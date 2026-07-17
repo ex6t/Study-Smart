@@ -7,6 +7,7 @@ import sys
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
 from app.screens.frontpageFE import WelcomeWindow
+from app.database.database import create_users_table
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -14,7 +15,7 @@ class MainWindow(QMainWindow):
         button = QPushButton("hi")
         self.setFixedSize(QSize(300, 300))
         self.setCentralWidget(button)
-
+create_users_table()
 app = QApplication(sys.argv)
 window = WelcomeWindow()
 window.show()
