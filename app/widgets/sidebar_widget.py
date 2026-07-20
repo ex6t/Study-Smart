@@ -74,11 +74,26 @@ class SidebarWidget(QWidget):
         sidebar_layout.addWidget(self.title)
 
         # Space before Dashboard button
-        sidebar_layout.addSpacing(140)
+        sidebar_layout.addSpacing(50)
 
         # Dashboard Button
         self.dashboard_button = self.create_sidebar_button("Dashboard")
         sidebar_layout.addWidget(self.dashboard_button)
+
+        sidebar_layout.addSpacing(25)
+
+        self.notes_button = self.create_sidebar_button("Notes")
+        sidebar_layout.addWidget(self.notes_button)
+
+        sidebar_layout.addSpacing(25)
+
+        self.flashcards_button = self.create_sidebar_button("Flashcards")
+        sidebar_layout.addWidget(self.flashcards_button)
+
+        sidebar_layout.addSpacing(25)
+
+        self.quizzes_button = self.create_sidebar_button("Quizzes")
+        sidebar_layout.addWidget(self.quizzes_button)
 
         # Push Settings button to bottom
         sidebar_layout.addStretch()

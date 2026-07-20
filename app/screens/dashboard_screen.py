@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QVBoxLayout, QStackedWidget, QApplication, QLabel, QMainWindow
 from app.widgets.sidebar_widget import SidebarWidget
 from app.widgets.dashboard_button_widget import DashboardCardWidget
 from app.widgets.Searchbar_widget import SearchBarWidget
@@ -12,14 +12,17 @@ class Dashboard(QWidget):
 
 
     def setup_ui(self):
-
+        #Side bar | QStackedwidget
         main_layout = QHBoxLayout(self)
 
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
-
+        #add sidebar
         self.sidebar = SidebarWidget()
 
+        #add stacked pages
+        self.page_stack = QStackedWidget()
+        
         self.content_frame = QFrame()
         self.content_frame.setStyleSheet(
             "background-color: rgb(240, 240, 240);"
@@ -40,14 +43,14 @@ class Dashboard(QWidget):
         button_text="Open"
         )
 
+        self.flashcards_card = DashboardCardWidget(
+            title ="Flashcards",
+            button_text = "Study"
+            )
+
         self.quizzes_card = DashboardCardWidget(
         title="Quizzes",
         button_text="Start"
-        )
-
-        self.flashcards_card = DashboardCardWidget(
-        title="Flashcards",
-        button_text="Study"
         )
 
         self.calendar_card = DashboardCardWidget(
@@ -58,8 +61,8 @@ class Dashboard(QWidget):
         cards_layout.setSpacing(20)
 
         cards_layout.addWidget(self.notes_card)
-        cards_layout.addWidget(self.quizzes_card)
         cards_layout.addWidget(self.flashcards_card)
+        cards_layout.addWidget(self.quizzes_card)
         cards_layout.addWidget(self.calendar_card)  
         
         self.content_layout.addLayout(top_bar_layout)
