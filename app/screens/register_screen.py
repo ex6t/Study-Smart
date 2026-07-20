@@ -7,10 +7,17 @@ from PyQt6.QtWidgets import (
     QPushButton,#push buttons
     QVBoxLayout, #vertical form
     QWidget, #place widgets within the vertical form
+    QHBoxLayout,
 )
 from PyQt6.QtGui import QFont #used for font control
-from PyQt6.QtCore import Qt #used for center alignment flag
-from app.database.database import (register_user, username_exists)
+from PyQt6.QtCore import Qt, QTimer#used for center alignment flag
+from app.database.database import (
+    register_user,
+    username_exists,
+    create_users_table,
+)
+
+
 
 class RegisterWindow(QWidget):
     def __init__(self):
@@ -59,12 +66,17 @@ class RegisterWindow(QWidget):
         self.register_button = QPushButton("Sign Up")
         self.register_button.clicked.connect(self.register_check)
 
+        #Already have an account button
+        self.login_button = QPushButton("Already have an account? Log In")
+        self.login_button.clicked.connect(self.open_login)
+        
+
         #Error / Success Message - use for later
         self.message_label = QLabel("")
 
         #----Add everything to Vertical layout widget------
 
-        #create header space and ever spacingh
+        #create header space and ever spacing
         layout.addStretch()
 
         layout.addWidget(title)
@@ -78,8 +90,38 @@ class RegisterWindow(QWidget):
         layout.addWidget(self.confirm_password_input)
 
         layout.addWidget(self.register_button)
+
+        #makes sure the text for already have account button is sized correctly
+        login_button_layout = QHBoxLayout()
+        login_button_layout.addStretch()
+        login_button_layout.addWidget(self.login_button)
+        login_button_layout.addStretch()
+
+        layout.addLayout(login_button_layout)
+
         layout.addWidget(self.message_label)
 
+        self.login_button.setStyleSheet("""
+        QPushButton {
+            background-color: transparent;
+            color: rgb(70, 165, 250);
+            border: none;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        QPushButton:hover {
+            color: rgb(90, 130, 200);                            
+            text-decoration: underline;
+        }
+
+        QPushButton:pressed {
+            color: rgb(90, 130, 200);
+        }
+    """)
+        self.login_button.adjustSize()
+        self.login_button.setFixedWidth(self.login_button.width() + 20)
         #create footer space and even spacing
         layout.addStretch()
 
@@ -130,17 +172,30 @@ class RegisterWindow(QWidget):
         )
 
         self.message_label.setText(message)
-
+    #redirects user to login window if username and password created successfully
         if success:
-            self.username_input.clear()
-            self.password_input.clear()
-            self.confirm_password_input.clear()
+            self.message_label.setStyleSheet("""
+            color: black;
+            font-size: 14px;
+            font-weight: bold;
+        """)
+            self.message_label.setText("Account created successfully!")
+            self.register_button.setEnabled(False)
+            QTimer.singleShot(2000, self.open_login)
 
-    
+#takes user to login window
+    def open_login(self):
+        from app.screens.login_screen import LoginView
+        self.login_window = LoginView()
+        self.login_window.show()
+        self.close()
+
 if __name__ == "__main__":
+    create_users_table()   # Create the users table if it doesn't exist
+
     app = QApplication(sys.argv)
 
-    window = RegisterView()
+    window = RegisterWindow()
     window.show()
 
     sys.exit(app.exec())
