@@ -54,8 +54,8 @@ class Dashboard(QWidget):
         )
 
         self.calendar_card = DashboardCardWidget(
-        title="Calendar",
-        button_text="View"
+        title="Placeholder",
+        button_text="N/A"
         )
         cards_layout = QHBoxLayout()
         cards_layout.setSpacing(20)

@@ -95,6 +95,11 @@ class SidebarWidget(QWidget):
         self.quizzes_button = self.create_sidebar_button("Quizzes")
         sidebar_layout.addWidget(self.quizzes_button)
 
+        sidebar_layout.addSpacing(25)
+
+        self.placeholder_button = self.create_sidebar_button("Placeholder")
+        sidebar_layout.addWidget(self.placeholder_button)
+
         # Push Settings button to bottom
         sidebar_layout.addStretch()
 
