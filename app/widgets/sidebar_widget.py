@@ -58,10 +58,11 @@ class SidebarWidget(QWidget):
         # Sidebar Layout
         sidebar_layout = QVBoxLayout(self.sidebar)
         sidebar_layout.setContentsMargins(20, 20, 20, 20)
-        sidebar_layout.setSpacing(15)
+        sidebar_layout.setSpacing(0)
 
         # Title
         self.title = QLabel("Study Smart")
+        self.title.setFixedHeight(60)
         self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.title.setStyleSheet("""
@@ -69,12 +70,13 @@ class SidebarWidget(QWidget):
             font-weight: bold;
             background: transparent;
             border: none;
+            color: #ffffff;
         """)
 
         sidebar_layout.addWidget(self.title)
 
         # Space before Dashboard button
-        sidebar_layout.addSpacing(50)
+        sidebar_layout.addSpacing(35)
 
         # Dashboard Button
         self.dashboard_button = self.create_sidebar_button("Dashboard")
