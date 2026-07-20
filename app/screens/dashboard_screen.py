@@ -80,7 +80,7 @@ class Dashboard(QWidget):
         font.setPointSize(24)
         font.setBold(True)
         self.welcome_label.setFont(font)
-        self.welcome_label.setStyleSheet("""color: #2d6cdf; padding-left: 50px;""") #match with front page
+        self.welcome_label.setStyleSheet("""color: #2d6cdf; padding-left: 15px;""") #match with front page
         #self.welcome_label.setContentsMargins(50, 0, 0, 0)
 
         
