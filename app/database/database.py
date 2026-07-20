@@ -113,3 +113,39 @@ def register_user(username, password):
 
     finally:
         connection.close()
+
+def login_user(username, password):
+
+    username = username.strip()
+
+    if username == "":
+        return False, "Username cannot be empty"
+    if password == "":
+        return False, "Password cannot be empty"
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            SELECT password FROM users WHERE username = ?
+            """,
+            (username,),
+        )
+
+        row = cursor.fetchone()
+        if row is None:
+            return False, "Invalid username."
+        stored_password = row[0]
+
+        if password == stored_password:
+            return True, "Login successful, redirecting..."
+        else:
+            return False, "Invalid password."
+
+    except sqlite3.Error as e:
+        return False, "Database error."
+    finally:
+        connection.close()
+
