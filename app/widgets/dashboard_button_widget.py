@@ -4,9 +4,9 @@ from PyQt6.QtWidgets import (
     QLabel,
     QPushButton,
     QVBoxLayout,
-    QFrame
+    QFrame,
+    QSizePolicy,
 )
-
 
 class DashboardCardWidget(QWidget):
 
@@ -24,7 +24,12 @@ class DashboardCardWidget(QWidget):
     def setup_ui(self):
 
         # Set the size of the entire widget
-        self.setFixedSize(self.CARD_WIDTH, self.CARD_HEIGHT)
+        #self.setFixedSize(self.CARD_WIDTH, self.CARD_HEIGHT)
+
+        self.setMinimumSize(180, 220)
+        self.setMaximumHeight(220)
+
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         # Main layout (holds the card frame)
         main_layout = QVBoxLayout(self)

@@ -1,36 +1,98 @@
-from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QVBoxLayout, QStackedWidget, QApplication, QLabel, QMainWindow
+from PyQt6.QtGui import QFont
+from PyQt6.QtCore import Qt
+from app.screens.notes_screen import NotesScreen
 from app.widgets.sidebar_widget import SidebarWidget
 from app.widgets.dashboard_button_widget import DashboardCardWidget
 from app.widgets.Searchbar_widget import SearchBarWidget
 class Dashboard(QWidget):
 
-    def __init__(self):
+    def __init__(self, username):
         super().__init__()
+        self.username = username
         self.setWindowTitle("Study Smart - Dashboard")
         self.resize(1200, 800)
         self.setup_ui()
 
+        self.connect_button_presses()
+
 
     def setup_ui(self):
-
+        #Side bar | QStackedwidget
         main_layout = QHBoxLayout(self)
 
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
-
+        #add sidebar
         self.sidebar = SidebarWidget()
 
-        self.content_frame = QFrame()
-        self.content_frame.setStyleSheet(
+        #add stacked pages
+        self.page_stack = QStackedWidget()
+
+        #Create pages
+        self.dashboard_home_page = self.create_dashboard_home_page()
+        self.notes_page = NotesScreen()
+
+        self.flashcards_page = self.placeholder_page("Flashcards")
+        self.quizzes_page = self.placeholder_page("Quizzes")
+        self.blank_page = self.placeholder_page("Blank")
+        self.settings_page = self.placeholder_page("Settings")
+
+        #pages added to stack will be indexed in order starting from 0
+
+        #Dashboard = 0
+        self.page_stack.addWidget(self.dashboard_home_page)
+        #Notes - 1
+        self.page_stack.addWidget(self.notes_page)
+        #Flashcards - 2
+        self.page_stack.addWidget(self.flashcards_page)
+        #Quizzes - 3
+        self.page_stack.addWidget(self.quizzes_page)
+        #Palceholder - 4
+        self.page_stack.addWidget(self.blank_page)
+        #Settings - 5
+        self.page_stack.addWidget(self.settings_page)
+
+        #start with dashboard page
+        self.page_stack.setCurrentWidget(self.dashboard_home_page)
+
+        #sidebar on left side of page
+        main_layout.addWidget(self.sidebar)
+
+        #page stack takes rest of space
+        main_layout.addWidget(self.page_stack, 1)
+        
+        
+    def create_dashboard_home_page(self):
+
+        dashboard_page = QFrame()
+        
+        dashboard_page.setStyleSheet(
             "background-color: rgb(240, 240, 240);"
         )
-        self.content_layout = QVBoxLayout(self.content_frame)
-        self.content_layout.setContentsMargins(20, 20, 20, 20)
-        self.content_layout.setSpacing(20)
+        content_layout = QVBoxLayout(dashboard_page)
+        content_layout.setContentsMargins(20, 20, 20, 20)
+        content_layout.setSpacing(0)
 
+        #Welcome Label
+        self.welcome_label = QLabel(f"Welcome, {self.username}!")
+        font = QFont()
+        font.setPointSize(24)
+        font.setBold(True)
+        self.welcome_label.setFont(font)
+        self.welcome_label.setStyleSheet("""color: #2d6cdf; padding-left: 15px;""") #match with front page
+        #self.welcome_label.setContentsMargins(50, 0, 0, 0)
+
+        
         # Search Bar
         self.search_bar = SearchBarWidget()
-        top_bar_layout = QHBoxLayout()
+        top_bar_widget = QWidget()
+        top_bar_widget.setFixedHeight(60)
+        top_bar_layout = QHBoxLayout(top_bar_widget)
+        top_bar_layout.setContentsMargins(0, 0, 0, 0)
+        top_bar_layout.setSpacing(20)
+        
+        top_bar_layout.addWidget(self.welcome_label)
         top_bar_layout.addStretch()
         top_bar_layout.addWidget(self.search_bar)
 
@@ -40,35 +102,79 @@ class Dashboard(QWidget):
         button_text="Open"
         )
 
+        self.flashcards_card = DashboardCardWidget(
+            title ="Flashcards",
+            button_text = "Study"
+            )
+
         self.quizzes_card = DashboardCardWidget(
         title="Quizzes",
         button_text="Start"
         )
 
-        self.flashcards_card = DashboardCardWidget(
-        title="Flashcards",
-        button_text="Study"
-        )
-
         self.calendar_card = DashboardCardWidget(
-        title="Calendar",
-        button_text="View"
+        title="Placeholder",
+        button_text="N/A"
         )
         cards_layout = QHBoxLayout()
+        cards_layout.setContentsMargins(0, 0, 0, 0)
         cards_layout.setSpacing(20)
 
-        cards_layout.addWidget(self.notes_card)
-        cards_layout.addWidget(self.quizzes_card)
-        cards_layout.addWidget(self.flashcards_card)
-        cards_layout.addWidget(self.calendar_card)  
-        
-        self.content_layout.addLayout(top_bar_layout)
-        self.content_layout.addSpacing(30)
-        self.content_layout.addLayout(cards_layout)
-        self.content_layout.addStretch()
+        cards_layout.addWidget(self.notes_card, 1)
+        cards_layout.addWidget(self.flashcards_card, 1)
+        cards_layout.addWidget(self.quizzes_card, 1)
+        cards_layout.addWidget(self.calendar_card, 1)
 
-        main_layout.addWidget(self.sidebar, 0)
-        main_layout.addWidget(self.content_frame, 1)
+                
+        content_layout.addWidget(top_bar_widget)
+        
+        content_layout.addSpacing(35)
+        content_layout.addLayout(cards_layout)
+        content_layout.addStretch()
+
+        return dashboard_page
+
+    def placeholder_page(self, page_name):
+        page = QWidget()
+        page_layout = QVBoxLayout(page)
+        page_title = QLabel(page_name)
+
+        title_font = page_title.font()
+        title_font.setPointSize(24)
+        title_font.setBold(True)
+
+        page_title.setFont(title_font)
+
+        page_layout.addWidget(page_title)
+        page_layout.addStretch()
+
+        return page
+    def connect_button_presses(self):
+        self.sidebar.dashboard_button.clicked.connect(self.show_dashboard_page)
+        self.sidebar.notes_button.clicked.connect(self.show_notes_page)
+        self.sidebar.flashcards_button.clicked.connect(self.show_flashcards_page)
+        self.sidebar.quizzes_button.clicked.connect(self.show_quizzes_page)
+        self.sidebar.placeholder_button.clicked.connect(self.show_blank_page)
+        self.sidebar.settings_button.clicked.connect(self.show_settings_page)
+
+        self.notes_card.action_button.clicked.connect(self.show_notes_page)
+        self.flashcards_card.action_button.clicked.connect(self.show_flashcards_page)
+        self.quizzes_card.action_button.clicked.connect(self.show_quizzes_page)
+        self.calendar_card.action_button.clicked.connect(self.show_blank_page)
+
+    def show_dashboard_page(self):
+        self.page_stack.setCurrentWidget(self.dashboard_home_page)
+    def show_notes_page(self):
+        self.page_stack.setCurrentWidget(self.notes_page)
+    def show_flashcards_page(self):
+        self.page_stack.setCurrentWidget(self.flashcards_page)
+    def show_quizzes_page(self):
+        self.page_stack.setCurrentWidget(self.quizzes_page)
+    def show_blank_page(self):
+        self.page_stack.setCurrentWidget(self.blank_page)
+    def show_settings_page(self):
+        self.page_stack.setCurrentWidget(self.settings_page)
+        
 
 
 if __name__ == "__main__":

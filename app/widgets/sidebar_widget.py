@@ -58,10 +58,11 @@ class SidebarWidget(QWidget):
         # Sidebar Layout
         sidebar_layout = QVBoxLayout(self.sidebar)
         sidebar_layout.setContentsMargins(20, 20, 20, 20)
-        sidebar_layout.setSpacing(15)
+        sidebar_layout.setSpacing(0)
 
         # Title
         self.title = QLabel("Study Smart")
+        self.title.setFixedHeight(60)
         self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.title.setStyleSheet("""
@@ -69,16 +70,37 @@ class SidebarWidget(QWidget):
             font-weight: bold;
             background: transparent;
             border: none;
+            color: #ffffff;
         """)
 
         sidebar_layout.addWidget(self.title)
 
         # Space before Dashboard button
-        sidebar_layout.addSpacing(140)
+        sidebar_layout.addSpacing(35)
 
         # Dashboard Button
         self.dashboard_button = self.create_sidebar_button("Dashboard")
         sidebar_layout.addWidget(self.dashboard_button)
+
+        sidebar_layout.addSpacing(25)
+
+        self.notes_button = self.create_sidebar_button("Notes")
+        sidebar_layout.addWidget(self.notes_button)
+
+        sidebar_layout.addSpacing(25)
+
+        self.flashcards_button = self.create_sidebar_button("Flashcards")
+        sidebar_layout.addWidget(self.flashcards_button)
+
+        sidebar_layout.addSpacing(25)
+
+        self.quizzes_button = self.create_sidebar_button("Quizzes")
+        sidebar_layout.addWidget(self.quizzes_button)
+
+        sidebar_layout.addSpacing(25)
+
+        self.placeholder_button = self.create_sidebar_button("Placeholder")
+        sidebar_layout.addWidget(self.placeholder_button)
 
         # Push Settings button to bottom
         sidebar_layout.addStretch()
