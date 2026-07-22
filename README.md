@@ -2,7 +2,7 @@
 
 ## Overview
 
-Study Smart is a desktop study application built with **Python**, **PyQt6**, and **SQLite**. The goal of the project is to give students one place to organize their study materials instead of constantly switching between different apps.
+**Study Smart** is a desktop study application built with **Python**, **PyQt6**, and **SQLite**. The goal of the project is to give students one place to organize their study materials instead of constantly switching between different apps.
 
 The application allows users to create an account, log in securely, manage notes, create flashcards, take quizzes, and view their study progress through an easy-to-use interface. Since this project was completed during a short summer semester, we focused on building a clean, functional application with a solid foundation that can easily be expanded in the future.
 
@@ -17,7 +17,8 @@ The application allows users to create an account, log in securely, manage notes
 - Import notes from text files
 - Flashcard management
 - Quiz management
-- Study progress overview
+- Built in pomodoro timer
+- Study checklist
 - Modern desktop interface built with PyQt6
 
 ---
@@ -28,8 +29,8 @@ The application allows users to create an account, log in securely, manage notes
 - PyQt6
 - SQLite3
 - Git & GitHub
-- Trello
-- Agile / Scrum
+- Trello (for ticketing)
+- Agile SCRUM
 
 ---
 
