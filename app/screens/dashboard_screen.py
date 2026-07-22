@@ -5,11 +5,14 @@ from app.screens.notes_screen import NotesScreen
 from app.widgets.sidebar_widget import SidebarWidget
 from app.widgets.dashboard_button_widget import DashboardCardWidget
 from app.widgets.Searchbar_widget import SearchBarWidget
+from app.database.database import get_user_id
+
 class Dashboard(QWidget):
 
     def __init__(self, username):
         super().__init__()
         self.username = username
+        self.user_id = get_user_id(username)
         self.setWindowTitle("Study Smart - Dashboard")
         self.resize(1200, 800)
         self.setup_ui()
@@ -31,7 +34,7 @@ class Dashboard(QWidget):
 
         #Create pages
         self.dashboard_home_page = self.create_dashboard_home_page()
-        self.notes_page = NotesScreen()
+        self.notes_page = NotesScreen(self.user_id)
 
         self.flashcards_page = self.placeholder_page("Flashcards")
         self.quizzes_page = self.placeholder_page("Quizzes")

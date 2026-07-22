@@ -149,3 +149,26 @@ def login_user(username, password):
     finally:
         connection.close()
 
+#Gets the numeric database ID for the logged in user
+def get_user_id(username):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT id
+        FROM users
+        WHERE username = ?
+        """,
+        (username,)
+    )
+
+    result = cursor.fetchone()
+
+    connection.close()
+
+    if result is None:
+        return None
+
+    return result[0]
+

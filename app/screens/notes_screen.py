@@ -9,12 +9,16 @@ from PyQt6.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
     QWidget,
+    QMessageBox,
 )
+from app.database.notes import save_note
 
 
 class NotesScreen(QWidget):
-    def __init__(self):
+    def __init__(self, user_id):
         super().__init__()
+
+        self.user_id = user_id
 
         self.setWindowTitle("Study Smart - New Note")
 
@@ -22,6 +26,7 @@ class NotesScreen(QWidget):
         self.setFixedSize(1200, 800)
 
         self.setup_ui()
+        self.connect_buttons()
 
     def setup_ui(self):
         # Main layout for the entire Notes page.
@@ -125,6 +130,31 @@ class NotesScreen(QWidget):
             self.page_title.setText("New Note")
         else:
             self.page_title.setText(text)
+
+    def connect_buttons(self):
+        self.save_notes_button.clicked.connect(self.handle_save_note)
+    def handle_save_note(self):
+        title = self.note_title_input.text().strip()
+
+        content = (self.notes_text_box.toPlainText().strip())
+
+        if title == "":
+            QMessageBox.warning(self,"Missing Title","Please enter a title.")
+            return
+
+        if content == "":
+            QMessageBox.warning(self, "Missing Content","Please enter note content.")
+            return
+
+        success, message = save_note(self.user_id, title, content)
+
+        if success:
+            QMessageBox.information(self, "Note Saved",message)
+            self.note_title_input.clear()
+            self.notes_text_box.clear()
+
+        else:
+            QMessageBox.warning(self,"Save Failed",message)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
