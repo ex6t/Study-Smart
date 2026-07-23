@@ -13,6 +13,7 @@ from PyQt6.QtCore import Qt  # used for center alignment flag
 from app.screens.register_screen import RegisterWindow
 from app.screens.dashboard_screen import Dashboard
 from app.database.database import login_user
+from app.database.session import start_session
 
 class LoginView(QWidget):
     def __init__(self):
@@ -105,6 +106,7 @@ class LoginView(QWidget):
 
         self.message_label.setText(return_message)
         if success:
+            start_session(username)
             self.login_redirect()
 
     def login_redirect(self):

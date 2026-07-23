@@ -4,6 +4,9 @@ from app.screens.welcome_screen import WelcomeWindow
 # Stores the currently logged-in user
 current_user = None
 
+#keep welcome window open after logout
+welcome_window = None
+
 
 def start_session(username):
     """
@@ -31,8 +34,8 @@ def end_session(current_window):
     current_user = None
 
     # Return to Welcome screen
-    welcome = WelcomeWindow()
-    welcome.show()
+    welcome_window = WelcomeWindow()
+    welcome_window.show()
 
     # Close Dashboard and sidebar
     current_window.close()
