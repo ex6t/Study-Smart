@@ -5,6 +5,7 @@ from app.screens.notes_screen import NotesScreen
 from app.widgets.sidebar_widget import SidebarWidget
 from app.widgets.dashboard_button_widget import DashboardCardWidget
 from app.widgets.Searchbar_widget import SearchBarWidget
+from app.screens.settings_screen import SettingsScreen
 class Dashboard(QWidget):
 
     def __init__(self, username):
@@ -36,7 +37,7 @@ class Dashboard(QWidget):
         self.flashcards_page = self.placeholder_page("Flashcards")
         self.quizzes_page = self.placeholder_page("Quizzes")
         self.blank_page = self.placeholder_page("Blank")
-        self.settings_page = self.placeholder_page("Settings")
+        self.settings_page = SettingsScreen()
 
         #pages added to stack will be indexed in order starting from 0
 
