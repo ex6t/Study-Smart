@@ -107,10 +107,10 @@ class LoginView(QWidget):
         self.message_label.setText(return_message)
         if success:
             start_session(username)
-            self.login_redirect()
+            self.login_redirect(username)
 
-    def login_redirect(self):
-        self.screen = Dashboard()
+    def login_redirect(self, username):
+        self.screen = Dashboard(username)
         self.screen.show()
         self.close()
 
