@@ -1,5 +1,3 @@
-from app.screens.welcome_screen import WelcomeWindow
-
 
 # Stores the currently logged-in user
 current_user = None
@@ -29,10 +27,12 @@ def end_session(current_window):
     """
 
     global current_user
+    global welcome_window
 
     # Clear current user session
     current_user = None
 
+    from app.screens.frontpageFE import WelcomeWindow
     # Return to Welcome screen
     welcome_window = WelcomeWindow()
     welcome_window.show()
