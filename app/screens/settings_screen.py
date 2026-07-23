@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import (
     QPushButton, # Create clickable buttons
     QVBoxLayout, # Place widgets vertically
 )
+from app.database.session import end_session
 
 
 class SettingsScreen(QWidget):
@@ -67,6 +68,7 @@ class SettingsScreen(QWidget):
 
         # Create the logout button
         self.logout_button = QPushButton("Logout")
+        self.logout_button.clicked.connect(self.logout_user)
 
         # Set the button size
         self.logout_button.setFixedSize(300, 50)
@@ -111,6 +113,8 @@ class SettingsScreen(QWidget):
         # Set the layout for the window
         self.setLayout(main_layout)
 
+    def logout_user(self):
+        end_session(self.window())
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
