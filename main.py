@@ -1,13 +1,9 @@
-# This is a sample Python script.
-
-# Press Ctrl+F5 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
 import sys
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
 from app.screens.frontpageFE import WelcomeWindow
 from app.database.database import create_users_table
+from app.database.notes import create_notes_table
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -16,9 +12,10 @@ class MainWindow(QMainWindow):
         self.setFixedSize(QSize(300, 300))
         self.setCentralWidget(button)
 create_users_table()
+create_notes_table()
 app = QApplication(sys.argv)
 window = WelcomeWindow()
 window.show()
 app.exec()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+

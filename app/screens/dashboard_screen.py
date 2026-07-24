@@ -5,6 +5,9 @@ from app.screens.notes_screen import NotesScreen
 from app.widgets.sidebar_widget import SidebarWidget
 from app.widgets.dashboard_button_widget import DashboardCardWidget
 from app.widgets.Searchbar_widget import SearchBarWidget
+from app.database.database import get_user_id
+from app.screens.all_notes_screen import AllNotesScreen
+
 from app.screens.settings_screen import SettingsScreen
 class Dashboard(QWidget):
 
@@ -16,6 +19,7 @@ class Dashboard(QWidget):
             }
         """)
         self.username = username
+        self.user_id = get_user_id(username)
         self.setWindowTitle("Study Smart - Dashboard")
         self.resize(1200, 800)
         self.setup_ui()
@@ -37,12 +41,13 @@ class Dashboard(QWidget):
 
         #Create pages
         self.dashboard_home_page = self.create_dashboard_home_page()
-        self.notes_page = NotesScreen()
+        self.notes_page = NotesScreen(self.user_id)
 
         self.flashcards_page = self.placeholder_page("Flashcards")
         self.quizzes_page = self.placeholder_page("Quizzes")
         self.blank_page = self.placeholder_page("Blank")
         self.settings_page = SettingsScreen()
+        self.all_notes_page = AllNotesScreen(self.user_id)
 
         #pages added to stack will be indexed in order starting from 0
 
@@ -58,6 +63,8 @@ class Dashboard(QWidget):
         self.page_stack.addWidget(self.planner_page)
         #Settings - 5
         self.page_stack.addWidget(self.settings_page)
+        #All Notes - 6
+        self.page_stack.addWidget(self.all_notes_page)
 
         #start with dashboard page
         self.page_stack.setCurrentWidget(self.dashboard_home_page)
@@ -163,16 +170,19 @@ class Dashboard(QWidget):
         return page
     def connect_button_presses(self):
         self.sidebar.dashboard_button.clicked.connect(self.show_dashboard_page)
-        self.sidebar.notes_button.clicked.connect(self.show_notes_page)
+        self.sidebar.notes_button.clicked.connect(self.open_all_notes)
         self.sidebar.flashcards_button.clicked.connect(self.show_flashcards_page)
         self.sidebar.quizzes_button.clicked.connect(self.show_quizzes_page)
         self.sidebar.planner_button.clicked.connect(self.show_planner_page)
         self.sidebar.settings_button.clicked.connect(self.show_settings_page)
 
-        self.notes_card.action_button.clicked.connect(self.show_notes_page)
+        self.notes_card.action_button.clicked.connect(self.open_all_notes)
         self.flashcards_card.action_button.clicked.connect(self.show_flashcards_page)
         self.quizzes_card.action_button.clicked.connect(self.show_quizzes_page)
         self.planner_card.action_button.clicked.connect(self.show_planner_page)
+
+        self.notes_page.view_all_notes_button.clicked.connect(self.open_all_notes)
+        self.all_notes_page.new_note_requested.connect(self.show_notes_page)
 
     def show_dashboard_page(self):
         self.page_stack.setCurrentWidget(self.dashboard_home_page)
@@ -186,8 +196,10 @@ class Dashboard(QWidget):
         self.page_stack.setCurrentWidget(self.planner_page)
     def show_settings_page(self):
         self.page_stack.setCurrentWidget(self.settings_page)
-        
-
+    def open_all_notes(self):
+        self.all_notes_page.refresh_notes()
+        self.page_stack.setCurrentWidget(self.all_notes_page)
+    
 
 if __name__ == "__main__":
     import sys
