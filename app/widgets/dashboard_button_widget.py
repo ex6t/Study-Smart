@@ -68,6 +68,7 @@ class DashboardCardWidget(QWidget):
             QLabel {
                 background-color: rgb(200, 200, 200);
                 border: none;
+                color: black;
                 border-radius: 8px;
                 font-size: 16px;
             }
@@ -84,6 +85,7 @@ class DashboardCardWidget(QWidget):
             QLabel {
                 background: transparent;
                 border: none;
+                color: black;
                 font-size: 18px;
                 font-weight: bold;
             }
@@ -113,6 +115,7 @@ class DashboardCardWidget(QWidget):
             QPushButton {
                 background-color: rgb(165, 190, 230);
                 border: none;
+                color: black;
                 border-radius: 8px;
                 font-size: 14px;
                 font-weight: bold;

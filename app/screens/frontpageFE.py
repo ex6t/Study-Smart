@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import (
 )
 from app.screens.register_screen import RegisterWindow
 from app.screens.login_screen import LoginView
+from app.database.database import create_users_table
  
  
 class WelcomeWindow(QMainWindow):
@@ -15,6 +16,7 @@ class WelcomeWindow(QMainWindow):
         self.resize(1200, 800)#starting size of the window 
  
         central = QWidget()
+        central.setStyleSheet("background-color: white;")
         self.setCentralWidget(central) #window's main content area 
 
         #stacks widgets vertically (top to bottom) inside "central"
@@ -72,6 +74,7 @@ class WelcomeWindow(QMainWindow):
  
  
 if __name__ == "__main__": #only run the code if someone is running this file directly 
+    create_users_table()
     app = QApplication(sys.argv)
     window = WelcomeWindow()
     window.show()

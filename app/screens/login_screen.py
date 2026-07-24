@@ -12,7 +12,7 @@ from PyQt6.QtGui import QFont  # used for font control
 from PyQt6.QtCore import Qt  # used for center alignment flag
 from app.screens.register_screen import RegisterWindow
 from app.screens.dashboard_screen import Dashboard
-from app.database.database import login_user
+from app.database.database import login_user, create_users_table
 
 class LoginView(QWidget):
     def __init__(self):
@@ -24,6 +24,12 @@ class LoginView(QWidget):
         self.setup_ui()
 
     def setup_ui(self):
+        self.setStyleSheet("""
+            QWidget {
+            background-color: white;
+            color: black;
+            }
+            """)
         # Empty Vertical Layout - Login form will be a vertical layout
         layout = QVBoxLayout()
 
@@ -43,6 +49,15 @@ class LoginView(QWidget):
         username_label = QLabel("Username")
         self.username_input = QLineEdit()
         self.username_input.setMaxLength(16)
+        self.username_input.setStyleSheet("""
+            QLineEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
 
         # Password Input Box - Will show up hidden as user types
         # removed max length checks, feels redundant otherwise
@@ -50,10 +65,33 @@ class LoginView(QWidget):
         self.password_input = QLineEdit()
         self.password_input.setMaxLength(20)
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.password_input.setStyleSheet("""
+            QLineEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
 
         # login button
         self.login_button = QPushButton("Login")
         self.login_button.clicked.connect(self.login_check)
+        self.login_button.setStyleSheet("""
+            QPushButton {
+                background-color: #2d6cdf;
+                color: white;
+                border-radius: 6px;
+                padding: 8px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: #1e4fa3;
+            }
+        """)
 
         # Error / Success Message - use for later
         self.message_label = QLabel("")
@@ -65,6 +103,19 @@ class LoginView(QWidget):
         self.register_button = QPushButton("Sign Up")
         self.register_button.setFixedSize(150, 30)
         self.register_button.clicked.connect(self.open_register)
+        self.register_button.setStyleSheet("""
+            QPushButton {
+                background-color: #2d6cdf;
+                color: white;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: #1e4fa3;
+            }
+        """)
 
         # ----Add everything to Vertical layout widget------
 
@@ -113,6 +164,7 @@ class LoginView(QWidget):
         self.close()
 
 if __name__ == "__main__":
+    create_users_table()
     app = QApplication(sys.argv)
 
     window = LoginView()

@@ -24,6 +24,28 @@ class NotesScreen(QWidget):
         self.setup_ui()
 
     def setup_ui(self):
+        self.setStyleSheet("""
+            QWidget {
+                background-color: white;
+                color: black;
+            }
+
+            QLineEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+
+            QTextEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
         # Main layout for the entire Notes page.
         main_layout = QVBoxLayout()
 
@@ -55,6 +77,15 @@ class NotesScreen(QWidget):
         title_label = QLabel("Note Title")
 
         self.note_title_input = QLineEdit()
+        self.note_title_input.setStyleSheet("""
+            QLineEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
         self.note_title_input.textChanged.connect(self.update_title)
         self.note_title_input.setPlaceholderText(
             "Enter a title for your note..."
@@ -72,6 +103,15 @@ class NotesScreen(QWidget):
         notes_label = QLabel("Your Notes")
 
         self.notes_text_box = QTextEdit()
+        self.notes_text_box.setStyleSheet("""
+            QTextEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
         self.notes_text_box.setPlaceholderText(
             "Start writing your notes here..."
         )

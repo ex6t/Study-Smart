@@ -29,6 +29,12 @@ class RegisterWindow(QWidget):
         self.setup_ui()
 
     def setup_ui(self):
+        self.setStyleSheet("""
+            QWidget {
+                background-color: white;
+                color: black;
+            }
+        """)
         #Empty Vertical Layout - Login form will be a vertical layout
         layout = QVBoxLayout()
 
@@ -45,26 +51,72 @@ class RegisterWindow(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         #Username label
-        username_label = QLabel("Username")
+        username_label = QLabel("Username(max 16 characters)")
         self.username_input = QLineEdit()
         self.username_input.setMaxLength(16)
+        self.username_input.setStyleSheet("""
+            QLineEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
 
                 #Password Input Box - Will show up hidden as user types
-        password_label = QLabel("Password")
+        password_label = QLabel("Password(max 20 characters)")
         self.password_input = QLineEdit()
         self.password_input.setMaxLength(20)
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
-        
+        self.password_input.setStyleSheet("""
+            QLineEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
 
         #Confirm Password - Will show up hidden as user types
         confirm_label = QLabel("Confirm Password")
         self.confirm_password_input = QLineEdit()
         self.confirm_password_input.setMaxLength(20)
         self.confirm_password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.confirm_password_input.setStyleSheet("""
+            QLineEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
 
         #Register Button - no action yet
         self.register_button = QPushButton("Sign Up")
         self.register_button.clicked.connect(self.register_check)
+        self.register_button.setStyleSheet("""
+            QPushButton {
+                background-color: #2d6cdf;
+                color: white;
+                border-radius: 6px;
+                padding: 8px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: #1e4fa3;
+                color: black;
+            }
+
+            QPushButton:pressed {
+                background-color: #174080;
+                color: black;
+            }
+        """)
 
         #Already have an account button
         self.login_button = QPushButton("Already have an account? Log In")
