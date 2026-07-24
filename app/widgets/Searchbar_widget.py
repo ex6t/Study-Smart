@@ -36,6 +36,7 @@ class SearchBarWidget(QWidget):
             QLineEdit{
                 background-color:white;
                 border:2px solid rgb(215,215,215);
+                color: gray;
                 border-radius:10px;
                 padding-left:12px;
                 font-size:14px;

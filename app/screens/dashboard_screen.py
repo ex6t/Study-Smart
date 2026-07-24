@@ -10,6 +10,11 @@ class Dashboard(QWidget):
 
     def __init__(self, username):
         super().__init__()
+        self.setStyleSheet("""
+            QWidget {
+            background-color: white;
+            }
+        """)
         self.username = username
         self.setWindowTitle("Study Smart - Dashboard")
         self.resize(1200, 800)
@@ -49,8 +54,8 @@ class Dashboard(QWidget):
         self.page_stack.addWidget(self.flashcards_page)
         #Quizzes - 3
         self.page_stack.addWidget(self.quizzes_page)
-        #Palceholder - 4
-        self.page_stack.addWidget(self.blank_page)
+        #Planner - 4
+        self.page_stack.addWidget(self.planner_page)
         #Settings - 5
         self.page_stack.addWidget(self.settings_page)
 
@@ -113,9 +118,9 @@ class Dashboard(QWidget):
         button_text="Start"
         )
 
-        self.calendar_card = DashboardCardWidget(
-        title="Placeholder",
-        button_text="N/A"
+        self.planner_card = DashboardCardWidget(
+        title="Planner",
+        button_text="Open"
         )
         cards_layout = QHBoxLayout()
         cards_layout.setContentsMargins(0, 0, 0, 0)
@@ -124,7 +129,7 @@ class Dashboard(QWidget):
         cards_layout.addWidget(self.notes_card, 1)
         cards_layout.addWidget(self.flashcards_card, 1)
         cards_layout.addWidget(self.quizzes_card, 1)
-        cards_layout.addWidget(self.calendar_card, 1)
+        cards_layout.addWidget(self.planner_card, 1)
 
                 
         content_layout.addWidget(top_bar_widget)
@@ -137,6 +142,12 @@ class Dashboard(QWidget):
 
     def placeholder_page(self, page_name):
         page = QWidget()
+        page.setStyleSheet("""
+            QWidget {
+                background-color: white;
+                color: black;
+            }
+        """)
         page_layout = QVBoxLayout(page)
         page_title = QLabel(page_name)
 
@@ -155,13 +166,13 @@ class Dashboard(QWidget):
         self.sidebar.notes_button.clicked.connect(self.show_notes_page)
         self.sidebar.flashcards_button.clicked.connect(self.show_flashcards_page)
         self.sidebar.quizzes_button.clicked.connect(self.show_quizzes_page)
-        self.sidebar.placeholder_button.clicked.connect(self.show_blank_page)
+        self.sidebar.planner_button.clicked.connect(self.show_planner_page)
         self.sidebar.settings_button.clicked.connect(self.show_settings_page)
 
         self.notes_card.action_button.clicked.connect(self.show_notes_page)
         self.flashcards_card.action_button.clicked.connect(self.show_flashcards_page)
         self.quizzes_card.action_button.clicked.connect(self.show_quizzes_page)
-        self.calendar_card.action_button.clicked.connect(self.show_blank_page)
+        self.planner_card.action_button.clicked.connect(self.show_planner_page)
 
     def show_dashboard_page(self):
         self.page_stack.setCurrentWidget(self.dashboard_home_page)
@@ -171,8 +182,8 @@ class Dashboard(QWidget):
         self.page_stack.setCurrentWidget(self.flashcards_page)
     def show_quizzes_page(self):
         self.page_stack.setCurrentWidget(self.quizzes_page)
-    def show_blank_page(self):
-        self.page_stack.setCurrentWidget(self.blank_page)
+    def show_planner_page(self):
+        self.page_stack.setCurrentWidget(self.planner_page)
     def show_settings_page(self):
         self.page_stack.setCurrentWidget(self.settings_page)
         

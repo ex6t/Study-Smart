@@ -9,6 +9,11 @@ class SidebarWidget(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setStyleSheet("""
+            QWidget {
+                background-color: white;
+            }
+        """)
         self.setup_ui()
 
     def create_sidebar_button(self, text):
@@ -22,6 +27,7 @@ class SidebarWidget(QWidget):
                 background-color: rgb(235, 242, 252);
                 border: none;
                 border-radius: 10px;
+                color: black;
                 font-size: 16px;
                 font-weight: bold;
             }
@@ -40,7 +46,11 @@ class SidebarWidget(QWidget):
     def setup_ui(self):
 
         # Make the widget itself transparent
-        self.setStyleSheet("background-color: transparent;")
+        self.setStyleSheet("""
+            QWidget {
+                background-color: white;
+            }
+        """)
 
         # Main Layout
         layout = QVBoxLayout(self)
@@ -70,7 +80,7 @@ class SidebarWidget(QWidget):
             font-weight: bold;
             background: transparent;
             border: none;
-            color: #ffffff;
+            color: black;
         """)
 
         sidebar_layout.addWidget(self.title)
@@ -99,8 +109,8 @@ class SidebarWidget(QWidget):
 
         sidebar_layout.addSpacing(25)
 
-        self.placeholder_button = self.create_sidebar_button("Placeholder")
-        sidebar_layout.addWidget(self.placeholder_button)
+        self.planner_button = self.create_sidebar_button("Planner")
+        sidebar_layout.addWidget(self.planner_button)
 
         # Push Settings button to bottom
         sidebar_layout.addStretch()
