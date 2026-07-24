@@ -23,7 +23,7 @@ class NotesScreen(QWidget):
         self.setWindowTitle("Study Smart - New Note")
 
         #For testing alone - QStackedWidget should resize all pages automatically next to sidebar since we're using layouts.
-        self.setFixedSize(1200, 800)
+        self.resize(1200, 800)
 
         self.setup_ui()
         self.connect_buttons()

@@ -56,3 +56,57 @@ def save_note(user_id, title, content):
     connection.close()
 
     return True, "Note saved successfully."
+
+#get saved notes using the user's id
+def get_notes(user_id):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            id,
+            title,
+            content,
+            created_at,
+            updated_at
+        FROM notes
+        WHERE user_id = ?
+        ORDER BY updated_at DESC
+        """,
+        (user_id,)
+    )
+
+    rows = cursor.fetchall()
+    connection.close()
+    notes = []
+    for row in rows:
+        notes.append(
+            {
+                "id": row[0],
+                "title": row[1],
+                "content": row[2],
+                "created_at": row[3],
+                "updated_at": row[4],
+            }
+        )
+    return notes
+
+#delete note from user
+def delete_note(note_id, user_id):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute(
+        """
+        DELETE FROM notes
+        WHERE id = ? AND user_id = ?
+        """,
+        (note_id, user_id)
+    )
+    connection.commit()
+
+    deleted = cursor.rowcount > 0
+
+    connection.close()
+
+    return deleted
