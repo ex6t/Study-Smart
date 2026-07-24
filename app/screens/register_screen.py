@@ -51,7 +51,7 @@ class RegisterWindow(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         #Username label
-        username_label = QLabel("Username(max 16 characters)")
+        username_label = QLabel("Username (max 16 characters)")
         self.username_input = QLineEdit()
         self.username_input.setMaxLength(16)
         self.username_input.setStyleSheet("""
@@ -65,7 +65,7 @@ class RegisterWindow(QWidget):
         """)
 
                 #Password Input Box - Will show up hidden as user types
-        password_label = QLabel("Password(max 20 characters)")
+        password_label = QLabel("Password (max 20 characters)")
         self.password_input = QLineEdit()
         self.password_input.setMaxLength(20)
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
