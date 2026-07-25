@@ -7,6 +7,7 @@ from app.widgets.dashboard_button_widget import DashboardCardWidget
 from app.widgets.Searchbar_widget import SearchBarWidget
 from app.database.database import get_user_id
 from app.screens.all_notes_screen import AllNotesScreen
+from app.screens.flashcards_screen import FlashcardsScreen
 
 from app.screens.settings_screen import SettingsScreen
 class Dashboard(QWidget):
@@ -43,7 +44,7 @@ class Dashboard(QWidget):
         self.dashboard_home_page = self.create_dashboard_home_page()
         self.notes_page = NotesScreen(self.user_id)
 
-        self.flashcards_page = self.placeholder_page("Flashcards")
+        self.flashcards_page = FlashcardsScreen()
         self.quizzes_page = self.placeholder_page("Quizzes")
         self.blank_page = self.placeholder_page("Blank")
         self.planner_page = self.placeholder_page("Planner")
