@@ -55,13 +55,23 @@ class NoteCardWidget(QWidget):
             heading_layout
         )
 
-        preview = self.note["content"]
+        preview = self.note["content"].strip()
 
-        if len(preview) > 120:
-            preview = preview[:120] + "..."
+        # Keep only the first 4 actual lines
+        preview_lines = preview.splitlines()[:4]
+        preview = "\n".join(preview_lines)
+
+        # Also limit very long paragraphs
+        if len(preview) > 180:
+            preview = preview[:180].rstrip() + "..."
+        elif len(self.note["content"].splitlines()) > 4:
+            preview += "\n..."
 
         self.preview_label = QLabel(preview)
         self.preview_label.setWordWrap(True)
+
+        # Prevent the preview from making the card taller
+        self.preview_label.setFixedHeight(80)
 
         main_layout.addWidget(
             self.preview_label
@@ -108,6 +118,7 @@ class NoteCardWidget(QWidget):
                 self.note
             )
         )
+        self.setFixedHeight(180)
 
         # Minimal styling just to separate each card.
         self.setStyleSheet(
