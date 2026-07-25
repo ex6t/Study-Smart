@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -11,22 +11,26 @@ from PyQt6.QtWidgets import (
     QWidget,
     QMessageBox,
 )
-from app.database.notes import save_note
+from app.database.notes import save_note, update_note
 
 
 class NotesScreen(QWidget):
+    note_updated = pyqtSignal()
+    
     def __init__(self, user_id):
         super().__init__()
 
         self.user_id = user_id
 
         self.setWindowTitle("Study Smart - New Note")
+        self.editing_note_id = None
 
         #For testing alone - QStackedWidget should resize all pages automatically next to sidebar since we're using layouts.
         self.resize(1200, 800)
 
         self.setup_ui()
         self.connect_buttons()
+        
 
     def setup_ui(self):
         self.setStyleSheet("""
@@ -186,15 +190,42 @@ class NotesScreen(QWidget):
             QMessageBox.warning(self, "Missing Content","Please enter note content.")
             return
 
-        success, message = save_note(self.user_id, title, content)
+        #For new notes
+        if self.editing_note_id is None:
+            success, message = save_note(self.user_id, title, content)
+            if success:
+                QMessageBox.information(self, "Note Saved", message)
+                self.reset_note_form()
 
-        if success:
-            QMessageBox.information(self, "Note Saved",message)
-            self.note_title_input.clear()
-            self.notes_text_box.clear()
+            else:
+                QMessageBox.warning(self, "Save Failed", message)
 
+        #For editing
         else:
-            QMessageBox.warning(self,"Save Failed",message)
+            success = update_note(self.editing_note_id, self.user_id, title, content)
+
+            if success:
+                QMessageBox.information(self, "Note Updated", "Your note was updated successfully.")
+                self.reset_note_form()
+                self.note_updated.emit()
+            else:
+                QMessageBox.information(self, "Update Failed", "The note could not be updated.")
+
+
+    def reset_note_form(self):
+        self.editing_note_id = None
+        self.note_title_input.clear()
+        self.notes_text_box.clear()
+
+        self.save_notes_button.setText("Save Notes")
+        self.page_title.setText("New Note")
+        
+    def load_notes_for_editing(self, note):
+        self.editing_note_id = note["id"]
+
+        self.note_title_input.setText(note["title"])
+        self.notes_text_box.setPlainText(note["content"])
+        self.save_notes_button.setText("Update Note")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

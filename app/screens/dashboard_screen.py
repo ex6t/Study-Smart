@@ -187,6 +187,9 @@ class Dashboard(QWidget):
         self.notes_page.view_all_notes_button.clicked.connect(self.open_all_notes)
         self.all_notes_page.new_note_requested.connect(self.show_notes_page)
 
+        self.all_notes_page.edit_note_requested.connect(self.open_edit_note)
+        self.notes_page.note_updated.connect(self.open_all_notes)
+
     def show_dashboard_page(self):
         self.page_stack.setCurrentWidget(self.dashboard_home_page)
     def show_notes_page(self):
@@ -202,7 +205,9 @@ class Dashboard(QWidget):
     def open_all_notes(self):
         self.all_notes_page.refresh_notes()
         self.page_stack.setCurrentWidget(self.all_notes_page)
-    
+    def open_edit_note(self, note):
+        self.notes_page.load_notes_for_editing(note)
+        self.page_stack.setCurrentWidget(self.notes_page)
 
 if __name__ == "__main__":
     import sys
