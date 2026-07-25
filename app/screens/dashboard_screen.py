@@ -46,6 +46,7 @@ class Dashboard(QWidget):
         self.flashcards_page = self.placeholder_page("Flashcards")
         self.quizzes_page = self.placeholder_page("Quizzes")
         self.blank_page = self.placeholder_page("Blank")
+        self.planner_page = self.placeholder_page("Planner")
         self.settings_page = SettingsScreen()
         self.all_notes_page = AllNotesScreen(self.user_id)
 
@@ -60,6 +61,7 @@ class Dashboard(QWidget):
         #Quizzes - 3
         self.page_stack.addWidget(self.quizzes_page)
         #Planner - 4
+        ##
         self.page_stack.addWidget(self.planner_page)
         #Settings - 5
         self.page_stack.addWidget(self.settings_page)
