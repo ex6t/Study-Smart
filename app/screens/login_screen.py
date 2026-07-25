@@ -66,6 +66,7 @@ class LoginView(QWidget):
         self.password_input = QLineEdit()
         self.password_input.setMaxLength(20)
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.password_input.returnPressed.connect(self.login_check)
         self.password_input.setStyleSheet("""
             QLineEdit {
                 background-color: white;

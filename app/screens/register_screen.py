@@ -84,6 +84,7 @@ class RegisterWindow(QWidget):
         self.confirm_password_input = QLineEdit()
         self.confirm_password_input.setMaxLength(20)
         self.confirm_password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.confirm_password_input.returnPressed.connect(self.register_check)
         self.confirm_password_input.setStyleSheet("""
             QLineEdit {
                 background-color: white;
@@ -93,6 +94,11 @@ class RegisterWindow(QWidget):
                 padding: 5px;
             }
         """)
+
+        # When enter is pressed, auto-focuses onto the confirm password field instead
+        self.password_input.returnPressed.connect(
+            self.confirm_password_input.setFocus
+        )
 
         #Register Button - no action yet
         self.register_button = QPushButton("Sign Up")
