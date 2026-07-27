@@ -51,7 +51,7 @@ class RegisterWindow(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         #Username label
-        username_label = QLabel("Username(max 16 characters)")
+        username_label = QLabel("Username (max 16 characters)")
         self.username_input = QLineEdit()
         self.username_input.setMaxLength(16)
         self.username_input.setStyleSheet("""
@@ -65,7 +65,7 @@ class RegisterWindow(QWidget):
         """)
 
                 #Password Input Box - Will show up hidden as user types
-        password_label = QLabel("Password(max 20 characters)")
+        password_label = QLabel("Password (max 20 characters)")
         self.password_input = QLineEdit()
         self.password_input.setMaxLength(20)
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
@@ -84,6 +84,7 @@ class RegisterWindow(QWidget):
         self.confirm_password_input = QLineEdit()
         self.confirm_password_input.setMaxLength(20)
         self.confirm_password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.confirm_password_input.returnPressed.connect(self.register_check)
         self.confirm_password_input.setStyleSheet("""
             QLineEdit {
                 background-color: white;
@@ -93,6 +94,11 @@ class RegisterWindow(QWidget):
                 padding: 5px;
             }
         """)
+
+        # When enter is pressed, auto-focuses onto the confirm password field instead
+        self.password_input.returnPressed.connect(
+            self.confirm_password_input.setFocus
+        )
 
         #Register Button - no action yet
         self.register_button = QPushButton("Sign Up")
