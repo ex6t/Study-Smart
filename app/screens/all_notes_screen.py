@@ -34,8 +34,50 @@ class AllNotesScreen(QWidget):
         self.refresh_notes()
 
     def setup_ui(self):
-        main_layout = QVBoxLayout(self)
 
+        # ----------- Page Styling -----------
+        self.setStyleSheet("""
+            QWidget {
+                background-color: rgb(240,240,240);
+                color: black;
+            }
+
+            QLabel {
+                color: black;
+            }
+
+            QScrollArea {
+                border: none;
+                background: rgb(240,240,240);
+            }
+
+            QScrollArea > QWidget > QWidget {
+                background: rgb(240,240,240);
+            }
+        """)
+
+        sidebar_button_style = """
+            QPushButton {
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
+            }
+        """
+
+        main_layout = QVBoxLayout(self)
+        
         main_layout.setContentsMargins(
             40,
             30,
@@ -45,7 +87,10 @@ class AllNotesScreen(QWidget):
 
         main_layout.setSpacing(15)
 
-        # Page heading
+        # --------------------------
+        # Page Heading
+        # --------------------------
+
         heading_layout = QHBoxLayout()
 
         self.page_title = QLabel("All Notes")
@@ -58,6 +103,10 @@ class AllNotesScreen(QWidget):
 
         self.new_note_button = QPushButton(
             "+ New Note"
+        )
+
+        self.new_note_button.setStyleSheet(
+            sidebar_button_style
         )
 
         heading_layout.addWidget(
@@ -74,7 +123,10 @@ class AllNotesScreen(QWidget):
             heading_layout
         )
 
-        # Sorting buttons
+        # --------------------------
+        # Sort Buttons
+        # --------------------------
+
         sort_layout = QHBoxLayout()
 
         sort_label = QLabel("Sort by:")
@@ -91,27 +143,70 @@ class AllNotesScreen(QWidget):
             "Oldest"
         )
 
+        self.sort_title_button.setStyleSheet(
+            sidebar_button_style
+        )
+
+        self.sort_newest_button.setStyleSheet(
+            sidebar_button_style
+        )
+
+        self.sort_oldest_button.setStyleSheet(
+            sidebar_button_style
+        )
+
         sort_layout.addWidget(sort_label)
         sort_layout.addWidget(
             self.sort_title_button
         )
+
         sort_layout.addWidget(
             self.sort_newest_button
         )
+
         sort_layout.addWidget(
             self.sort_oldest_button
         )
+
         sort_layout.addStretch()
 
         main_layout.addLayout(
             sort_layout
         )
 
-        # Scroll area
+        # --------------------------
+        # Scroll Area
+        # --------------------------
+
         self.scroll_area = QScrollArea()
+        self.scroll_area.setStyleSheet("""
+            QScrollArea {
+                background: rgb(240,240,240);
+                border: none;
+            }
+
+            QWidget {
+                background: rgb(240,240,240);
+            }
+        """)
         self.scroll_area.setWidgetResizable(True)
 
         self.notes_container = QWidget()
+        self.notes_container.setStyleSheet("""
+            background-color: rgb(240,240,240);
+        """)
+        self.scroll_area.setFrameShape(QScrollArea.Shape.NoFrame)
+
+        self.scroll_area.setStyleSheet("""
+            QScrollArea {
+                background: rgb(240,240,240);
+                border: none;
+            }
+
+            QScrollArea > QWidget > QWidget {
+                background: rgb(240,240,240);
+            }
+        """)
 
         self.notes_layout = QVBoxLayout(
             self.notes_container
@@ -121,6 +216,8 @@ class AllNotesScreen(QWidget):
             Qt.AlignmentFlag.AlignTop
         )
 
+        self.notes_layout.setSpacing(18)
+
         self.scroll_area.setWidget(
             self.notes_container
         )
@@ -129,7 +226,6 @@ class AllNotesScreen(QWidget):
             self.scroll_area,
             1
         )
-
     def connect_buttons(self):
         self.new_note_button.clicked.connect(
             self.new_note_requested.emit
@@ -142,24 +238,30 @@ class AllNotesScreen(QWidget):
         self.sort_newest_button.clicked.connect(
             self.sort_by_newest
         )
+
         self.sort_oldest_button.clicked.connect(
             self.sort_by_oldest
         )
 
     def refresh_notes(self):
         self.notes = get_notes(self.user_id)
-
         self.display_notes()
 
     def display_notes(self):
         self.clear_notes_layout()
 
         if len(self.notes) == 0:
-            empty_label = QLabel("Empty")
+            empty_label = QLabel("No notes found.")
 
             empty_label.setAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
+
+            empty_label.setStyleSheet("""
+                font-size: 16px;
+                color: black;
+                background-color: rgb(240,240,240);
+            """)
 
             self.notes_layout.addWidget(
                 empty_label
@@ -224,28 +326,93 @@ class AllNotesScreen(QWidget):
         self.display_notes()
 
     def view_note(self, note):
-        QMessageBox.information(
-            self,
-            note["title"],
-            note["content"]
-        )
+        msg = QMessageBox(self)
+        msg.setWindowTitle(note["title"])
+        msg.setText(note["content"])
+
+        msg.setStyleSheet("""
+            QMessageBox {
+                background-color: white;
+            }
+
+            QLabel {
+                color: black;
+                background: transparent;
+                font-size: 14px;
+            }
+
+            QPushButton {
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
+            }
+        """)
+
+        msg.exec()
 
     def edit_note(self, note):
         self.edit_note_requested.emit(note)
 
     def confirm_delete_note(self, note):
-        answer = QMessageBox.question(
-            self,
-            "Delete Note",
-            (
-                f'Are you sure you want to '
-                f'delete "{note["title"]}"?'
-            ),
-            QMessageBox.StandardButton.Yes
-            | QMessageBox.StandardButton.No
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Delete Note")
+        msg.setText(
+            f'Are you sure you want to delete "{note["title"]}"?'
         )
 
-        if answer != QMessageBox.StandardButton.Yes:
+        msg.setIcon(QMessageBox.Icon.Question)
+
+        yes_button = msg.addButton(
+            QMessageBox.StandardButton.Yes
+        )
+        no_button = msg.addButton(
+            QMessageBox.StandardButton.No
+        )
+
+        msg.setStyleSheet("""
+            QWidget {
+                background-color: white;
+            }
+
+            QLabel {
+                color: black;
+                background: white;
+            }
+
+            QPushButton {
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
+            }
+        """)
+
+        msg.exec()
+
+        if msg.clickedButton() != yes_button:
             return
 
         deleted = delete_note(
@@ -256,15 +423,57 @@ class AllNotesScreen(QWidget):
         if deleted:
             self.refresh_notes()
 
-            QMessageBox.information(
-                self,
+            self.styled_message(
                 "Note Deleted",
-                "The note was deleted."
+                "The note was deleted.",
+                "info"
             )
 
         else:
-            QMessageBox.warning(
-                self,
+            self.styled_message(
                 "Delete Failed",
-                "The note could not be deleted."
+                "The note could not be deleted.",
+                "warning"   
             )
+    def styled_message(self, title, text, icon="info"):
+        msg = QMessageBox(self)
+        msg.setWindowTitle(title)
+        msg.setText(text)
+
+        if icon == "info":
+            msg.setIcon(QMessageBox.Icon.Information)
+        elif icon == "warning":
+            msg.setIcon(QMessageBox.Icon.Warning)
+        elif icon == "critical":
+            msg.setIcon(QMessageBox.Icon.Critical)
+
+        msg.setStyleSheet("""
+            QWidget {
+                background-color: white;
+            }
+
+            QLabel {
+                color: black;
+                background: white;
+            }
+
+            QPushButton {
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
+            }
+        """)
+
+        msg.exec()

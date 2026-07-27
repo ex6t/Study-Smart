@@ -27,7 +27,7 @@ class LoginView(QWidget):
     def setup_ui(self):
         self.setStyleSheet("""
             QWidget {
-            background-color: white;
+            background-color: rgb(240, 240, 240);
             color: black;
             }
             """)
@@ -81,16 +81,21 @@ class LoginView(QWidget):
         self.login_button.clicked.connect(self.login_check)
         self.login_button.setStyleSheet("""
             QPushButton {
-                background-color: #2d6cdf;
-                color: white;
-                border-radius: 6px;
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
                 padding: 8px;
                 font-size: 14px;
                 font-weight: bold;
             }
 
             QPushButton:hover {
-                background-color: #1e4fa3;
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
             }
         """)
 
@@ -106,15 +111,20 @@ class LoginView(QWidget):
         self.register_button.clicked.connect(self.open_register)
         self.register_button.setStyleSheet("""
             QPushButton {
-                background-color: #2d6cdf;
-                color: white;
-                border-radius: 6px;
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
                 font-size: 14px;
                 font-weight: bold;
             }
 
             QPushButton:hover {
-                background-color: #1e4fa3;
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
             }
         """)
 

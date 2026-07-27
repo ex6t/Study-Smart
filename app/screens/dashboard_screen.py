@@ -15,7 +15,7 @@ class Dashboard(QWidget):
         super().__init__()
         self.setStyleSheet("""
             QWidget {
-            background-color: white;
+                background-color: rgb(240, 240, 240);
             }
         """)
         self.username = username
@@ -45,7 +45,7 @@ class Dashboard(QWidget):
 
         self.flashcards_page = self.placeholder_page("Flashcards")
         self.quizzes_page = self.placeholder_page("Quizzes")
-        self.blank_page = self.placeholder_page("Blank")
+        self.planner_page = self.placeholder_page("Planner")
         self.settings_page = SettingsScreen()
         self.all_notes_page = AllNotesScreen(self.user_id)
 
@@ -151,7 +151,7 @@ class Dashboard(QWidget):
         page = QWidget()
         page.setStyleSheet("""
             QWidget {
-                background-color: white;
+                background-color: rgb(240, 240, 240);
                 color: black;
             }
         """)
@@ -199,6 +199,7 @@ class Dashboard(QWidget):
     def open_all_notes(self):
         self.all_notes_page.refresh_notes()
         self.page_stack.setCurrentWidget(self.all_notes_page)
+        
     
 
 if __name__ == "__main__":
