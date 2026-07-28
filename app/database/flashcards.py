@@ -10,8 +10,28 @@ def create_flashcard_table():
         CREATE TABLE IF NOT EXISTS flashcards (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
+        deck_id INTEGER NOT NULL,
         term TEXT NOT NULL,
         definition TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id)
+        FOREIGN KEY (deck_id) REFERENCES decks (id)
+        )
+        """
+    )
+
+    connection.commit()
+    connection.close()
+
+def create_decks_table():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS flashcards (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        name TEXT NOT NULL
         FOREIGN KEY (user_id) REFERENCES users (id)
         )
         """
@@ -36,6 +56,7 @@ def save_flashcard(user_id, term, definition):
             INSERT INTO flashcards (
                 id,
                 user_id,
+                deck_id,
                 term, 
                 definition
             )
@@ -50,6 +71,35 @@ def save_flashcard(user_id, term, definition):
     finally:
         connection.close()
 
+def save_deck(user_id, name):
+    if name.strip() == "":
+        return False, "Name cannot be empty"
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            INSERT INTO decks (
+            user_id, name
+            )
+            VALUES (?, ?)
+            """,
+            (user_id, name)
+        )
+        connection.commit()
+        return True, "Deck saved successfully"
+    except sqlite3.Error as e:
+        return False, f"Database error: {e}"
+    finally:
+        connection.close()
+
+def get_deck(user_id, name):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute()
+
 def get_flashcards(user_id):
     connection = get_connection()
     cursor = connection.cursor()
@@ -57,7 +107,8 @@ def get_flashcards(user_id):
     cursor.execute(
         """
         SELECT
-            user_id,
+            id,
+            deck_id,
             term,
             definition
         FROM flashcards
@@ -74,6 +125,7 @@ def get_flashcards(user_id):
         flashcards.append(
             {
                 "id": row[0],
+                "deck_id": row[1],
                 "term": row[1],
                 "definition": row[2],
             }
