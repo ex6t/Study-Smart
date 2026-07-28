@@ -44,7 +44,7 @@ class Dashboard(QWidget):
         self.dashboard_home_page = self.create_dashboard_home_page()
         self.notes_page = NotesScreen(self.user_id)
 
-        self.flashcards_page = FlashcardsScreen()
+        self.flashcards_page = FlashcardsScreen(self.user_id)
         self.quizzes_page = self.placeholder_page("Quizzes")
         self.blank_page = self.placeholder_page("Blank")
         self.planner_page = self.placeholder_page("Planner")

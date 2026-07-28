@@ -11,17 +11,24 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from app.database.flashcards import (
+    save_flashcard
+)
+
 
 class FlashcardsScreen(QWidget):
-    def __init__(self):
+    def __init__(self, user_id):
         super().__init__()
 
         self.setWindowTitle("Study Smart - Flashcards")
+
+        self.user_id = user_id
 
         self.setFixedSize(1200, 800)
 
         # Calls the function that creates all widgets
         self.setup_ui()
+        self.connect_buttons()
 
     def setup_ui(self):
         # Main page layout
@@ -147,6 +154,22 @@ class FlashcardsScreen(QWidget):
 
         # Apply finished layout to window
         self.setLayout(main_layout)
+
+    def connect_buttons(self):
+        self.save_flashcard_button.clicked.connect(self.save_flashcard_pressed)
+
+    def save_flashcard_pressed(self):
+        question = self.question_input.toPlainText().strip()
+        answer = self.answer_input.toPlainText().strip()
+
+        if question == "":
+            self.message_label.setText("Please enter your flashcard question")
+        if answer == "":
+            self.message_label.setText("Please enter your flashcard answer")
+
+        success, message = save_flashcard(self.user_id, question, answer)
+        if success:
+            self.message_label.setText(message)
 
 
 if __name__ == "__main__":
