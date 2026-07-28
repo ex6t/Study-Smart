@@ -110,3 +110,37 @@ def delete_note(note_id, user_id):
     connection.close()
 
     return deleted
+
+def update_note(note_id, user_id, title, content):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    current_time = datetime.now().strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
+
+    cursor.execute(
+        """
+        UPDATE notes
+        SET title = ?,
+            content = ?,
+            updated_at = ?
+        WHERE id = ?
+          AND user_id = ?
+        """,
+        (
+            title,
+            content,
+            current_time,
+            note_id,
+            user_id
+        )
+    )
+
+    connection.commit()
+
+    note_was_updated = cursor.rowcount > 0
+
+    connection.close()
+
+    return note_was_updated
