@@ -116,6 +116,7 @@ class NoteCardWidget(QWidget):
         )
 
         button_layout = QHBoxLayout()
+        button_layout.setContentsMargins(0, 4, 0, 0)
 
         button_layout.addStretch()
 
@@ -180,7 +181,8 @@ class NoteCardWidget(QWidget):
                 self.note
             )
         )
-        self.setFixedHeight(180)
+        # Leave enough room for the preview and a small gap above the buttons.
+        self.setMinimumHeight(200)
 
         # Card styling
         self.setObjectName("NoteCard")
