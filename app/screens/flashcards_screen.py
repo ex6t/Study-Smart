@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
 )
 
 from app.database.flashcards import (
-    save_flashcard
+    save_flashcard, get_flashcards
 )
 
 
@@ -178,19 +178,27 @@ class FlashcardsScreen(QWidget):
     def connect_buttons(self):
         self.save_flashcard_button.clicked.connect(self.save_flashcard_pressed)
 
+        self.view_flashcards_button.clicked.connect(self.view_flashcards_pressed)
+
     def save_flashcard_pressed(self):
         question = self.question_input.toPlainText().strip()
         answer = self.answer_input.toPlainText().strip()
 
         if question == "":
             self.message_label.setText("Please enter your flashcard question")
+            return
         if answer == "":
             self.message_label.setText("Please enter your flashcard answer")
+            return
 
         success, message = save_flashcard(self.user_id, question, answer)
-        if success:
-            self.message_label.setText(message)
+        self.message_label.setText(message)
 
+
+    def view_flashcards_pressed(self):
+        flashcards = get_flashcards(self.user_id)
+        for flashcard in flashcards:
+            print(flashcard)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

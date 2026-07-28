@@ -34,11 +34,12 @@ def save_flashcard(user_id, term, definition):
         cursor.execute(
             """
             INSERT INTO flashcards (
+                id,
                 user_id,
                 term, 
                 definition
             )
-            VALUES (?, ?, ?)
+            VALUES (?, ?, ?, ?)
             """,
             (user_id, term, definition)
         )
@@ -49,3 +50,42 @@ def save_flashcard(user_id, term, definition):
     finally:
         connection.close()
 
+def get_flashcards(user_id):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            user_id,
+            term,
+            definition
+        FROM flashcards
+        WHERE user_id = ?
+        ORDER BY id DESC
+        """,
+        (user_id,)
+    )
+
+    rows = cursor.fetchall()
+    connection.close()
+    flashcards = []
+    for row in rows:
+        flashcards.append(
+            {
+                "id": row[0],
+                "term": row[1],
+                "definition": row[2],
+            }
+        )
+    return flashcards
+
+def get_answer(question):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        
+        """
+    )
