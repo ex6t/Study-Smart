@@ -25,6 +25,9 @@ class NoteCardWidget(QWidget):
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
 
+        main_layout.setContentsMargins(15, 15, 15, 15)
+        main_layout.setSpacing(12)
+
         heading_layout = QHBoxLayout()
 
         self.title_label = QLabel(
@@ -36,20 +39,49 @@ class NoteCardWidget(QWidget):
         title_font.setPointSize(14)
 
         self.title_label.setFont(title_font)
+        self.title_label.setStyleSheet("""
+            color: black;
+            background: transparent;
+            border: none;
+        """)
 
         self.date_label = QLabel(
             self.format_date()
         )
 
-        heading_layout.addWidget(
-            self.title_label
-        )
+        self.date_label.setStyleSheet("""
+            color: rgb(90,90,90);
+            background: transparent;
+            border: none;
+        """)
+
+        title_box = QWidget()
+        title_box.setStyleSheet("""
+            background:white;
+            border: 1px solid rgb(180,180,180);
+            border-radius:8px;
+            """)
+
+        title_layout = QHBoxLayout(title_box)
+        title_layout.setContentsMargins(10,6,10,6)
+        title_layout.addWidget(self.title_label)
+
+        heading_layout.addWidget(title_box)
 
         heading_layout.addStretch()
 
-        heading_layout.addWidget(
-            self.date_label
-        )
+        date_box = QWidget()
+        date_box.setStyleSheet("""
+        background:white;
+        border: 1px solid rgb(180,180,180);
+        border-radius:8px;
+        """)
+
+        date_layout = QHBoxLayout(date_box)
+        date_layout.setContentsMargins(10,6,10,6)
+        date_layout.addWidget(self.date_label)
+
+        heading_layout.addWidget(date_box)
 
         main_layout.addLayout(
             heading_layout
@@ -72,7 +104,13 @@ class NoteCardWidget(QWidget):
 
         # Prevent the preview from making the card taller
         self.preview_label.setFixedHeight(80)
-
+        self.preview_label.setStyleSheet("""
+            color: rgb(40,40,40);
+            background: white;
+            border: 1px solid rgb(180,180,180);
+            border-radius: 8px;
+            padding: 10px;
+        """)
         main_layout.addWidget(
             self.preview_label
         )
@@ -84,6 +122,30 @@ class NoteCardWidget(QWidget):
         self.view_button = QPushButton("View")
         self.edit_button = QPushButton("Edit")
         self.delete_button = QPushButton("Delete")
+
+        button_style = """
+        QPushButton {
+            background-color: rgb(205,220,245);
+            color: black;
+            border: 1px solid rgb(170,185,210);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        QPushButton:hover {
+            background-color: rgb(185,205,240);
+        }
+
+        QPushButton:pressed {
+            background-color: rgb(165,190,230);
+        }
+        """
+
+        self.view_button.setStyleSheet(button_style)
+        self.edit_button.setStyleSheet(button_style)
+        self.delete_button.setStyleSheet(button_style)
 
         button_layout.addWidget(
             self.view_button
@@ -120,14 +182,22 @@ class NoteCardWidget(QWidget):
         )
         self.setFixedHeight(180)
 
-        # Minimal styling just to separate each card.
-        self.setStyleSheet(
-            """
-            NoteCardWidget {
-                border: 1px solid lightgray;
-            }
-            """
-        )
+        # Card styling
+        self.setObjectName("NoteCard")
+
+        self.setStyleSheet("""
+        #NoteCard {
+            background-color: white;
+            border: 1px solid rgb(190,190,190);
+            border-radius: 12px;
+        }
+
+        QLabel {
+            color: black;
+            background: transparent;
+            border: none;
+        }
+        """)
 
     def format_date(self):
         date_value = self.note.get(

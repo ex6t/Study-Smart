@@ -35,7 +35,7 @@ class NotesScreen(QWidget):
     def setup_ui(self):
         self.setStyleSheet("""
             QWidget {
-                background-color: white;
+                background-color: rgb(240, 240, 240);
                 color: black;
             }
 
@@ -153,6 +153,33 @@ class NotesScreen(QWidget):
             "Save Notes"
         )
 
+        button_style = """
+            QPushButton {
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
+            }
+        """
+
+        self.view_all_notes_button.setStyleSheet(button_style)
+        self.save_notes_button.setStyleSheet(button_style)
+
+# Keep both buttons the same size
+        self.view_all_notes_button.setFixedSize(170, 40)
+        self.save_notes_button.setFixedSize(170, 40)
+
         # Put View All Notes on the left.
         button_layout.addWidget(
             self.view_all_notes_button
@@ -177,56 +204,116 @@ class NotesScreen(QWidget):
 
     def connect_buttons(self):
         self.save_notes_button.clicked.connect(self.handle_save_note)
+
     def handle_save_note(self):
         title = self.note_title_input.text().strip()
-
-        content = (self.notes_text_box.toPlainText().strip())
+        content = self.notes_text_box.toPlainText().strip()
 
         if title == "":
-            QMessageBox.warning(self,"Missing Title","Please enter a title.")
+            self.styled_message(
+                "Missing Title",
+                "Please enter a title.",
+                "warning"
+            )
             return
 
         if content == "":
-            QMessageBox.warning(self, "Missing Content","Please enter note content.")
+            self.styled_message(
+                "Missing Content",
+                "Please enter note content.",
+                "warning"
+            )
             return
 
-        #For new notes
+        # For new notes
         if self.editing_note_id is None:
             success, message = save_note(self.user_id, title, content)
             if success:
-                QMessageBox.information(self, "Note Saved", message)
+                self.styled_message("Note Saved", message, "info")
                 self.reset_note_form()
-
             else:
-                QMessageBox.warning(self, "Save Failed", message)
+                self.styled_message("Save Failed", message, "warning")
 
-        #For editing
+        # For editing an existing note
         else:
-            success = update_note(self.editing_note_id, self.user_id, title, content)
+            success = update_note(
+                self.editing_note_id,
+                self.user_id,
+                title,
+                content
+            )
 
             if success:
-                QMessageBox.information(self, "Note Updated", "Your note was updated successfully.")
+                self.styled_message(
+                    "Note Updated",
+                    "Your note was updated successfully.",
+                    "info"
+                )
                 self.reset_note_form()
                 self.note_updated.emit()
             else:
-                QMessageBox.information(self, "Update Failed", "The note could not be updated.")
-
+                self.styled_message(
+                    "Update Failed",
+                    "The note could not be updated.",
+                    "warning"
+                )
 
     def reset_note_form(self):
         self.editing_note_id = None
         self.note_title_input.clear()
         self.notes_text_box.clear()
-
         self.save_notes_button.setText("Save Notes")
         self.page_title.setText("New Note")
-        
+
     def load_notes_for_editing(self, note):
         self.editing_note_id = note["id"]
-
         self.note_title_input.setText(note["title"])
         self.notes_text_box.setPlainText(note["content"])
         self.save_notes_button.setText("Update Note")
 
+    def styled_message(self, title, text, icon="info"):
+        msg = QMessageBox(self)
+        msg.setWindowTitle(title)
+        msg.setText(text)
+
+        if icon == "info":
+            msg.setIcon(QMessageBox.Icon.Information)
+        elif icon == "warning":
+            msg.setIcon(QMessageBox.Icon.Warning)
+        elif icon == "critical":
+            msg.setIcon(QMessageBox.Icon.Critical)
+
+        msg.setStyleSheet("""
+            QWidget {
+                background-color: white;
+            }
+
+            QLabel {
+                color: black;
+                background: white;
+            }
+
+            QPushButton {
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-weight: bold;
+                min-width: 80px;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
+            }
+        """)
+
+        msg.exec()
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
