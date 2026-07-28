@@ -113,8 +113,8 @@ class DashboardCardWidget(QWidget):
 
         self.action_button.setStyleSheet("""
             QPushButton {
-                background-color: rgb(165, 190, 230);
-                border: none;
+                background-color: rgb(205,220,245);
+                border: 1px solid rgb(170,185,210);
                 color: black;
                 border-radius: 8px;
                 font-size: 14px;
@@ -123,11 +123,11 @@ class DashboardCardWidget(QWidget):
             }
 
             QPushButton:hover {
-                background-color: rgb(180, 205, 240);
+                background-color: rgb(185,205,240);
             }
 
             QPushButton:pressed {
-                background-color: rgb(145, 170, 210);
+                background-color: rgb(165,190,230);
             }
         """)
 

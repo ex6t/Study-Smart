@@ -25,7 +25,7 @@ class SidebarWidget(QWidget):
         button.setStyleSheet("""
             QPushButton {
                 background-color: rgb(235, 242, 252);
-                border: none;
+                border: 1px solid rgb(170,185,210);
                 border-radius: 10px;
                 color: black;
                 font-size: 16px;

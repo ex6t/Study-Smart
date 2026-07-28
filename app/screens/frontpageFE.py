@@ -16,7 +16,7 @@ class WelcomeWindow(QMainWindow):
         self.resize(1200, 800)#starting size of the window 
  
         central = QWidget()
-        central.setStyleSheet("background-color: white;")
+        central.setStyleSheet("background-color: rgb(240, 240, 240);")
         self.setCentralWidget(central) #window's main content area 
 
         #stacks widgets vertically (top to bottom) inside "central"
@@ -26,11 +26,11 @@ class WelcomeWindow(QMainWindow):
         # Welcome text
         welcome_label = QLabel("Welcome to Study Smart")
         welcome_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        font = welcome_label.font() #grab the label's current font settings
-        font.setPointSize(20)#make the font bigger
-        welcome_label.setFont(font) #apply updated font back to label
-        welcome_label.setStyleSheet("color: #2d6cdf;")  # blue text color
- 
+        welcome_label.setStyleSheet("""
+            color: #2d6cdf;
+            font-weight: bold;
+            font-size: 30px;
+        """)
         # Buttons row
         button_row = QHBoxLayout() #stack widgets side by side (left to right)
         self.signup_button = QPushButton("Sign Up") #clickable button
@@ -42,14 +42,19 @@ class WelcomeWindow(QMainWindow):
 
         button_style="""
             QPushButton {
-                background-color: #2d6cdf;
-                color: white;
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                font-size: 12px;
+                font-weight: bold;
                 padding: 8px 20px;
-                border-radius: 6px;
-                font-size: 14px;
             }
             QPushButton:hover {
-                background-color: #1e4fa3;
+                background-color: rgb(185,205,240);
+            }
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
             }
         """
 
@@ -60,6 +65,7 @@ class WelcomeWindow(QMainWindow):
         button_row.addWidget(self.login_button) #place log in button next to it
  
         main_layout.addWidget(welcome_label)#add the welcome text to the main vertical layout
+        main_layout.addSpacing(40)
         main_layout.addLayout(button_row)#add the whole button row below the text 
  
         # Buttons don't do anything yet - functionality added later
