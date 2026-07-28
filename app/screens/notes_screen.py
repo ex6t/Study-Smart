@@ -31,7 +31,7 @@ class NotesScreen(QWidget):
     def setup_ui(self):
         self.setStyleSheet("""
             QWidget {
-                background-color: white;
+                background-color: rgb(240, 240, 240);
                 color: black;
             }
 
@@ -149,6 +149,33 @@ class NotesScreen(QWidget):
             "Save Notes"
         )
 
+        button_style = """
+            QPushButton {
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
+            }
+        """
+
+        self.view_all_notes_button.setStyleSheet(button_style)
+        self.save_notes_button.setStyleSheet(button_style)
+
+# Keep both buttons the same size
+        self.view_all_notes_button.setFixedSize(170, 40)
+        self.save_notes_button.setFixedSize(170, 40)
+
         # Put View All Notes on the left.
         button_layout.addWidget(
             self.view_all_notes_button
@@ -173,29 +200,86 @@ class NotesScreen(QWidget):
 
     def connect_buttons(self):
         self.save_notes_button.clicked.connect(self.handle_save_note)
+
     def handle_save_note(self):
         title = self.note_title_input.text().strip()
-
-        content = (self.notes_text_box.toPlainText().strip())
+        content = self.notes_text_box.toPlainText().strip()
 
         if title == "":
-            QMessageBox.warning(self,"Missing Title","Please enter a title.")
+            self.styled_message(
+                "Missing Title",
+                "Please enter a title.",
+                "warning"
+            )
             return
 
         if content == "":
-            QMessageBox.warning(self, "Missing Content","Please enter note content.")
+            self.styled_message(
+                "Missing Content",
+                "Please enter note content.",
+                "warning"
+            )
             return
 
         success, message = save_note(self.user_id, title, content)
 
         if success:
-            QMessageBox.information(self, "Note Saved",message)
+            self.styled_message(
+                "Note Saved",
+                message,
+                "info"
+            )
             self.note_title_input.clear()
             self.notes_text_box.clear()
-
         else:
-            QMessageBox.warning(self,"Save Failed",message)
+            self.styled_message(
+                "Save Failed",
+                message,
+                "warning"
+            )
+    def styled_message(self, title, text, icon="info"):
+        msg = QMessageBox(self)
+        msg.setWindowTitle(title)
+        msg.setText(text)
 
+        if icon == "info":
+            msg.setIcon(QMessageBox.Icon.Information)
+        elif icon == "warning":
+            msg.setIcon(QMessageBox.Icon.Warning)
+        elif icon == "critical":
+            msg.setIcon(QMessageBox.Icon.Critical)
+
+        msg.setStyleSheet("""
+            QWidget {
+                background-color: white;
+            }
+
+            QLabel {
+                color: black;
+                background: white;
+            }
+
+            QPushButton {
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-weight: bold;
+                min-width: 80px;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
+            }
+            """)
+
+        msg.exec()
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
