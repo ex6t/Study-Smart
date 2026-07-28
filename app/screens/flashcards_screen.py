@@ -34,6 +34,26 @@ class FlashcardsScreen(QWidget):
         # Main page layout
         main_layout = QVBoxLayout()
 
+        self.setStyleSheet("""
+                    QWidget {
+                        background-color: rgb(240,240,240);
+                        color: black;
+                    }
+
+                    QLabel {
+                        color: black;
+                    }
+
+                    QScrollArea {
+                        border: none;
+                        background: rgb(240,240,240);
+                    }
+
+                    QScrollArea > QWidget > QWidget {
+                        background: rgb(240,240,240);
+                    }
+                """)
+
         # Add spacing around the page.
         main_layout.setContentsMargins(40, 30, 40, 30)#(left, top, right, bottom)
 
