@@ -5,6 +5,7 @@ from app.screens.login_screen import LoginView
 from app.screens.settings_screen import SettingsScreen
 
 
+#TEST TO ENSURE A SUCCESSFUL LOGIN STARTS USER SESSION AND REDIRECTS THE USER
 class LoginScreenTests(unittest.TestCase):
     #ARRANGE
     @patch("app.screens.login_screen.start_session")
