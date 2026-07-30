@@ -120,14 +120,7 @@ class PlannerScreen(QWidget):
 
         self.plan_text_box = QTextEdit()
 
-        self.plan_text_box.setPlaceholderText(
-            "Example: "
-            "Math Midterm\n"
-            "- Read Chapter 5\n"
-            "- Complete practice quiz\n"
-            "- Review flashcards\n"
-            "- Meet with study group Thursday"
-        )
+        self.plan_text_box.setPlaceholderText("Example: Study Flashcards")
 
         main_layout.addWidget(
             self.plan_text_box,
