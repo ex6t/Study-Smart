@@ -121,7 +121,7 @@ class PlannerScreen(QWidget):
         self.plan_text_box = QTextEdit()
 
         self.plan_text_box.setPlaceholderText(
-            "Example:\n\n"
+            "Example: Study Flashcards"
             "Math Midterm\n"
             "- Read Chapter 5\n"
             "- Complete practice quiz\n"
