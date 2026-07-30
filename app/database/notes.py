@@ -144,3 +144,43 @@ def update_note(note_id, user_id, title, content):
     connection.close()
 
     return note_was_updated
+
+
+def find_note_by_title(user_id, title):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            id,
+            title,
+            content,
+            created_at,
+            updated_at
+        FROM notes
+        WHERE user_id = ?
+        AND LOWER(title) LIKE LOWER(?)
+        LIMIT 1
+        """,
+        (
+            user_id,
+            f"%{title}%"
+        )
+    )
+
+    row = cursor.fetchone()
+
+    connection.close()
+
+    if row is None:
+        return None
+
+    return {
+        "id": row[0],
+        "title": row[1],
+        "content": row[2],
+        "created_at": row[3],
+        "updated_at": row[4],
+    }

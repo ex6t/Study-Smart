@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QVBoxLayout, QStackedWidget, QApplication, QLabel, QMainWindow
+from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QVBoxLayout, QStackedWidget, QApplication, QLabel, QMainWindow, QMessageBox
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 from app.screens.notes_screen import NotesScreen
@@ -10,7 +10,8 @@ from app.screens.all_notes_screen import AllNotesScreen
 from app.screens.flashcards_screen import FlashcardsScreen
 from app.screens.planner_screen import PlannerScreen
 from app.screens.all_plans_screen import AllPlansScreen
-from app.database.planner_database import delete_plan, update_completed
+from app.database.notes import find_note_by_title
+from app.database.planner_database import delete_plan, update_completed, find_plan_by_title
 from app.screens.settings_screen import SettingsScreen
 class Dashboard(QWidget):
 
@@ -198,6 +199,7 @@ class Dashboard(QWidget):
         self.all_plans_page.delete_plan_requested.connect(self.delete_plan)
         self.planner_page.plan_updated.connect(self.open_all_plans)
         self.all_plans_page.completed_changed.connect(self.update_completed)
+        self.search_bar.search_requested.connect(self.search_dashboard)
 
     def show_dashboard_page(self):
         self.page_stack.setCurrentWidget(self.dashboard_home_page)
@@ -230,6 +232,74 @@ class Dashboard(QWidget):
     def update_completed(self, plan, completed):
         update_completed(plan["id"],int(completed))
         self.open_all_plans()
+    def search_dashboard(self, search_text):
+
+        note = find_note_by_title(
+            self.user_id,
+            search_text
+        )
+
+        if note:
+            self.open_all_notes()
+
+            self.all_notes_page.scroll_to_note(
+            note["id"]
+            )
+
+            return
+
+
+        plan = find_plan_by_title(
+            self.user_id,
+            search_text
+        )
+
+        if plan:
+            self.open_all_plans()
+
+            self.all_plans_page.scroll_to_plan(plan["id"])
+
+            return
+
+
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Search")
+        msg.setText(f'No note or planner titled "{search_text}" was found.')
+
+        msg.setIcon(
+            QMessageBox.Icon.Information
+        )
+
+        msg.setStyleSheet("""
+            QWidget {
+                background-color: white;
+            }
+
+            QLabel {
+                color: black;
+                background: white;
+            }
+
+            QPushButton {
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
+            }
+        """)
+
+        msg.exec()
 
 if __name__ == "__main__":
     import sys

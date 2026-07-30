@@ -19,53 +19,52 @@ class PlannerCardWidget(QWidget):
 
     def __init__(self, plan):
         super().__init__()
-
+        self.setObjectName("PlannerCard")
         self.plan = plan
         self.expanded = False
 
         self.setup_ui()
 
     def setup_ui(self):
-
         self.setStyleSheet("""
-            QWidget {
-                background-color: white;
-                border-radius: 10px;
-            }
+        #PlannerCard {
+            background-color: white;
+            border: 1px solid rgb(190,190,190);
+            border-radius: 10px;
+        }
 
-            QLabel {
-                color: black;
-                background: transparent;
-            }
+        QLabel {
+            color: black;
+            background: transparent;
+        }
 
-            QPushButton {
-                background-color: rgb(205,220,245);
-                color: black;
-                border: 1px solid rgb(170,185,210);
-                border-radius: 8px;
-                padding: 5px 12px;
-                font-size: 12px;
-                font-weight: bold;
-            }
+        QPushButton {
+            background-color: rgb(205,220,245);
+            color: black;
+            border: 1px solid rgb(170,185,210);
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
 
-            QPushButton:hover {
-                background-color: rgb(185,205,240);
-            }
+        QPushButton:hover {
+            background-color: rgb(185,205,240);
+        }
 
-            QCheckBox::indicator {
-                width: 18px;
-                height: 18px;
-            }
+        QCheckBox::indicator {
+            width: 18px;
+            height: 18px;
+        }
 
-            QCheckBox::indicator:unchecked {
-                image: url(app/widgets/unchecked_box.png);
-            }
+        QCheckBox::indicator:unchecked {
+            image: url(app/widgets/unchecked_box.png);
+        }
 
-            QCheckBox::indicator:checked {
-                image: url(app/widgets/checked_box.png);
-            }
+        QCheckBox::indicator:checked {
+            image: url(app/widgets/checked_box.png);
+        }
         """)
-
         self.setMinimumHeight(120)
 
 
@@ -224,7 +223,7 @@ class PlannerCardWidget(QWidget):
         main_layout.addLayout(
             bottom_layout
         )
-
+        
 
     # -----------------------------
     # Expand / Collapse
