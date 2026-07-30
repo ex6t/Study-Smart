@@ -10,11 +10,9 @@ def create_flashcard_table():
         CREATE TABLE IF NOT EXISTS flashcards (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
-        deck_id INTEGER NOT NULL,
         term TEXT NOT NULL,
         definition TEXT NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users (id)
-        FOREIGN KEY (deck_id) REFERENCES decks (id)
         )
         """
     )
@@ -28,7 +26,7 @@ def create_decks_table():
 
     cursor.execute(
         """
-        CREATE TABLE IF NOT EXISTS flashcards (
+        CREATE TABLE IF NOT EXISTS decks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
         name TEXT NOT NULL
@@ -54,13 +52,11 @@ def save_flashcard(user_id, term, definition):
         cursor.execute(
             """
             INSERT INTO flashcards (
-                id,
                 user_id,
-                deck_id,
                 term, 
                 definition
             )
-            VALUES (?, ?, ?, ?)
+            VALUES (?, ?, ?)
             """,
             (user_id, term, definition)
         )
@@ -108,7 +104,6 @@ def get_flashcards(user_id):
         """
         SELECT
             id,
-            deck_id,
             term,
             definition
         FROM flashcards
@@ -125,19 +120,8 @@ def get_flashcards(user_id):
         flashcards.append(
             {
                 "id": row[0],
-                "deck_id": row[1],
                 "term": row[1],
                 "definition": row[2],
             }
         )
     return flashcards
-
-def get_answer(question):
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    cursor.execute(
-        """
-        
-        """
-    )

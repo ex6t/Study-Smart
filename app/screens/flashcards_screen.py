@@ -16,7 +16,7 @@ from app.database.flashcards import (
 )
 
 
-class FlashcardsScreen(QWidget):
+class FlashcardCreationScreen(QWidget):
     def __init__(self, user_id):
         super().__init__()
 
