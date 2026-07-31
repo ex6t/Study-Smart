@@ -6,13 +6,13 @@ from PyQt6.QtWidgets import (
     QLabel,
     QTextEdit,
     QPushButton,
-    QVBoxLayout, # Creates vertical layout
-    QHBoxLayout, # Creates a horizontal layout
-    QWidget,
+    QVBoxLayout,  # Creates vertical layout
+    QHBoxLayout,  # Creates a horizontal layout
+    QWidget, QComboBox, QInputDialog,
 )
 
 from app.database.flashcards import (
-    save_flashcard, get_flashcards
+    save_flashcard, get_flashcards, get_decks, save_deck, get_deck
 )
 
 
@@ -80,6 +80,21 @@ class FlashcardCreationScreen(QWidget):
         
         #Place title inside vertical layout
         main_layout.addWidget(self.page_title)
+
+        deck_label = QLabel("Deck")
+        deck_row = QHBoxLayout()
+
+        self.deck_combo = QComboBox()
+
+        self.new_deck_button = QPushButton("New Deck")
+
+        deck_row.addWidget(self.deck_combo)
+        deck_row.addWidget(self.new_deck_button)
+
+        main_layout.addWidget(deck_label)
+        main_layout.addLayout(deck_row)
+
+        self.refresh_decks()
 
         # --------------------------------
         # Question Input
@@ -180,10 +195,16 @@ class FlashcardCreationScreen(QWidget):
 
         self.view_flashcards_button.clicked.connect(self.view_flashcards_pressed)
 
+        self.new_deck_button.clicked.connect(self.new_deck_button_pressed)
+
     def save_flashcard_pressed(self):
         question = self.question_input.toPlainText().strip()
         answer = self.answer_input.toPlainText().strip()
+        deck_id = self.deck_combo.currentData()
 
+        if deck_id == None:
+            self.message_label.setText("Please create or select a deck first")
+            return
         if question == "":
             self.message_label.setText("Please enter your flashcard question")
             return
@@ -200,10 +221,35 @@ class FlashcardCreationScreen(QWidget):
         for flashcard in flashcards:
             print(flashcard)
 
+    def refresh_decks(self, deck_id=None):
+        self.deck_combo.clear()
+        decks = get_decks(self.user_id)
+
+        if not decks:
+            self.deck_combo.addItem("No decks yet", None)
+            return
+        for deck in decks:
+            self.deck_combo.addItem(deck["name"], deck["id"])
+        # if its really laggy i can add a thing for only refreshing one deck type but i think its fine as is
+
+    def new_deck_button_pressed(self):
+        name, ok = QInputDialog.getText(
+            self, "New Deck", "Deck name:"
+        )
+
+        if not ok: return
+
+        success, message = save_deck(self.user_id, name)
+        self.message_label.setText(message)
+
+        if success:
+            new_deck = get_deck(self.user_id, name)
+            self.refresh_decks(self)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    window = FlashcardsScreen()
+    window = FlashcardCreationScreen()
     window.show()
 
     sys.exit(app.exec())
