@@ -8,7 +8,9 @@ from app.widgets.Searchbar_widget import SearchBarWidget
 from app.database.database import get_user_id
 from app.screens.all_notes_screen import AllNotesScreen
 from app.screens.flashcards_screen import FlashcardsScreen
-
+from app.screens.planner_screen import PlannerScreen
+from app.screens.all_plans_screen import AllPlansScreen
+from app.database.planner_database import delete_plan, update_completed
 from app.screens.settings_screen import SettingsScreen
 class Dashboard(QWidget):
 
@@ -21,7 +23,7 @@ class Dashboard(QWidget):
         """)
         self.username = username
         self.user_id = get_user_id(username)
-        self.setWindowTitle("Study Smart - Dashboard")
+        self.setWindowTitle("Study Smart")
         self.resize(1200, 800)
         self.setup_ui()
 
@@ -46,7 +48,8 @@ class Dashboard(QWidget):
 
         self.flashcards_page = FlashcardsScreen()
         self.quizzes_page = self.placeholder_page("Quizzes")
-        self.planner_page = self.placeholder_page("Planner")
+        self.planner_page = PlannerScreen(self.user_id)
+        self.all_plans_page = AllPlansScreen(self.user_id)
         self.settings_page = SettingsScreen()
         self.all_notes_page = AllNotesScreen(self.user_id)
 
@@ -61,13 +64,13 @@ class Dashboard(QWidget):
         #Quizzes - 3
         self.page_stack.addWidget(self.quizzes_page)
         #Planner - 4
-        ##
         self.page_stack.addWidget(self.planner_page)
         #Settings - 5
         self.page_stack.addWidget(self.settings_page)
         #All Notes - 6
         self.page_stack.addWidget(self.all_notes_page)
-
+        #All Plans - 7
+        self.page_stack.addWidget(self.all_plans_page)
         #start with dashboard page
         self.page_stack.setCurrentWidget(self.dashboard_home_page)
 
@@ -175,19 +178,26 @@ class Dashboard(QWidget):
         self.sidebar.notes_button.clicked.connect(self.open_all_notes)
         self.sidebar.flashcards_button.clicked.connect(self.show_flashcards_page)
         self.sidebar.quizzes_button.clicked.connect(self.show_quizzes_page)
-        self.sidebar.planner_button.clicked.connect(self.show_planner_page)
+        self.sidebar.planner_button.clicked.connect(self.open_all_plans)
         self.sidebar.settings_button.clicked.connect(self.show_settings_page)
 
         self.notes_card.action_button.clicked.connect(self.open_all_notes)
         self.flashcards_card.action_button.clicked.connect(self.show_flashcards_page)
         self.quizzes_card.action_button.clicked.connect(self.show_quizzes_page)
-        self.planner_card.action_button.clicked.connect(self.show_planner_page)
-
+        self.planner_card.action_button.clicked.connect(self.open_all_plans)
+        self.planner_page.view_all_plans_button.clicked.connect(self.open_all_plans)
+        self.all_plans_page.new_plan_requested.connect(self.show_planner_page)
         self.notes_page.view_all_notes_button.clicked.connect(self.open_all_notes)
         self.all_notes_page.new_note_requested.connect(self.show_notes_page)
 
         self.all_notes_page.edit_note_requested.connect(self.open_edit_note)
         self.notes_page.note_updated.connect(self.open_all_notes)
+
+
+        self.all_plans_page.edit_plan_requested.connect(self.open_edit_plan)
+        self.all_plans_page.delete_plan_requested.connect(self.delete_plan)
+        self.planner_page.plan_updated.connect(self.open_all_plans)
+        self.all_plans_page.completed_changed.connect(self.update_completed)
 
     def show_dashboard_page(self):
         self.page_stack.setCurrentWidget(self.dashboard_home_page)
@@ -204,9 +214,22 @@ class Dashboard(QWidget):
     def open_all_notes(self):
         self.all_notes_page.refresh_notes()
         self.page_stack.setCurrentWidget(self.all_notes_page)
+    def open_all_plans(self):
+        self.all_plans_page.refresh_plans()
+        self.page_stack.setCurrentWidget(self.all_plans_page)
     def open_edit_note(self, note):
         self.notes_page.load_notes_for_editing(note)
         self.page_stack.setCurrentWidget(self.notes_page)
+    def open_edit_plan(self, plan):
+        self.planner_page.load_plan_for_editing(plan)
+        self.page_stack.setCurrentWidget(self.planner_page)
+    def delete_plan(self, plan):
+        success, message = delete_plan(plan["id"])
+        if success:
+            self.open_all_plans()
+    def update_completed(self, plan, completed):
+        update_completed(plan["id"],int(completed))
+        self.open_all_plans()
 
 if __name__ == "__main__":
     import sys

@@ -72,9 +72,9 @@ class NoteCardWidget(QWidget):
 
         date_box = QWidget()
         date_box.setStyleSheet("""
-        background:white;
-        border: 1px solid rgb(180,180,180);
-        border-radius:8px;
+            background:white;
+            border: 1px solid rgb(180,180,180);
+            border-radius:8px;
         """)
 
         date_layout = QHBoxLayout(date_box)
