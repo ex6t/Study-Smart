@@ -54,6 +54,26 @@ class FlashcardCreationScreen(QWidget):
                     }
                 """)
 
+        sidebar_button_style = """
+                   QPushButton {
+                       background-color: rgb(205,220,245);
+                       color: black;
+                       border: 1px solid rgb(170,185,210);
+                       border-radius: 8px;
+                       padding: 6px 14px;
+                       font-size: 12px;
+                       font-weight: bold;
+                   }
+
+                   QPushButton:hover {
+                       background-color: rgb(185,205,240);
+                   }
+
+                   QPushButton:pressed {
+                       background-color: rgb(165,190,230);
+                   }
+               """
+
         # Add spacing around the page.
         main_layout.setContentsMargins(40, 30, 40, 30)#(left, top, right, bottom)
 
@@ -187,6 +207,17 @@ class FlashcardCreationScreen(QWidget):
         # Add horizontal button layout to main vertical layout
         main_layout.addLayout(button_layout)
 
+
+        self.new_deck_button.setStyleSheet(
+            sidebar_button_style
+        )
+        self.view_flashcards_button.setStyleSheet(
+            sidebar_button_style
+        )
+        self.save_flashcard_button.setStyleSheet(
+            sidebar_button_style
+        )
+
         # Apply finished layout to window
         self.setLayout(main_layout)
 
@@ -212,7 +243,7 @@ class FlashcardCreationScreen(QWidget):
             self.message_label.setText("Please enter your flashcard answer")
             return
 
-        success, message = save_flashcard(self.user_id, question, answer)
+        success, message = save_flashcard(self.user_id, deck_id, question, answer)
         self.message_label.setText(message)
 
 
