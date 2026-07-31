@@ -47,7 +47,7 @@ class Dashboard(QWidget):
         self.flashcards_page = FlashcardsScreen()
         self.quizzes_page = self.placeholder_page("Quizzes")
         self.planner_page = self.placeholder_page("Planner")
-        self.settings_page = SettingsScreen()
+        self.settings_page = SettingsScreen(self.user_id)
         self.all_notes_page = AllNotesScreen(self.user_id)
 
         #pages added to stack will be indexed in order starting from 0
