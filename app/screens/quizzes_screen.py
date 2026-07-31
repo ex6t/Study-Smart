@@ -50,7 +50,6 @@ class QuizzesScreen(QWidget):
             }
 
             QComboBox,
-            QSpinBox,
             QLineEdit {
                 background-color: white;
                 color: black;
@@ -60,10 +59,63 @@ class QuizzesScreen(QWidget):
                 min-height: 24px;
             }
 
+            QSpinBox {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 7px;
+                padding-right: 32px;
+                min-height: 24px;
+            }
+
+            QSpinBox::up-button {
+                subcontrol-origin: border;
+                subcontrol-position: top right;
+                width: 28px;
+                border-left: 1px solid gray;
+                border-bottom: 1px solid rgb(210, 210, 210);
+                border-top-right-radius: 5px;
+            }
+
+            QSpinBox::down-button {
+                subcontrol-origin: border;
+                subcontrol-position: bottom right;
+                width: 28px;
+                border-left: 1px solid gray;
+                border-top: 1px solid rgb(210, 210, 210);
+                border-bottom-right-radius: 5px;
+            }
+
+            QSpinBox::up-arrow {
+                image: url(app/widgets/spin_up_arrow.svg);
+                width: 12px;
+                height: 8px;
+            }
+
+            QSpinBox::down-arrow {
+                image: url(app/widgets/spin_down_arrow.svg);
+                width: 12px;
+                height: 8px;
+            }
+
             QComboBox:focus,
             QSpinBox:focus,
             QLineEdit:focus {
                 border: 1px solid rgb(90, 130, 200);
+            }
+
+            QCheckBox::indicator {
+                width: 18px;
+                height: 18px;
+            }
+
+            QCheckBox::indicator:unchecked {
+                image: url(app/widgets/unchecked_box.png);
+            }
+
+            QCheckBox::indicator:checked {
+                image: url(app/widgets/checked_box.png);
             }
 
             QPushButton {
@@ -169,6 +221,7 @@ class QuizzesScreen(QWidget):
         self.shuffle_questions_box = QCheckBox(
             "Shuffle question order"
         )
+
         self.shuffle_questions_box.setChecked(False)
 
         self.start_quiz_button = QPushButton("Start Quiz")
@@ -184,7 +237,6 @@ class QuizzesScreen(QWidget):
         layout.addWidget(self.shuffle_questions_box)
         layout.addStretch()
         layout.addWidget(self.start_quiz_button)
-
         return panel
 
     def create_quiz_panel(self):
