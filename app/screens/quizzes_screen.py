@@ -1,6 +1,6 @@
 import sys
 
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -18,29 +18,16 @@ from PyQt6.QtWidgets import (
 
 
 class QuizzesScreen(QWidget):
-    """
-    Front-end screen for building a quiz from a flashcard deck.
-
-    The signals and helper methods are ready for future flashcard and
-    quiz backend code. This file does not load or save database data.
-    """
-
-    import_deck_requested = pyqtSignal()
-    quiz_start_requested = pyqtSignal(str, int, bool)
-    answer_submitted = pyqtSignal(str)
-    next_question_requested = pyqtSignal()
-
     def __init__(self, user_id=None):
         super().__init__()
 
-        # Kept for future user-specific flashcard deck loading.
+        #Kept for future user-specific flashcard deck loading.
         self.user_id = user_id
 
         self.setWindowTitle("Study Smart - Quizzes")
         self.resize(1200, 800)
 
         self.setup_ui()
-        self.connect_buttons()
 
     def setup_ui(self):
         self.setStyleSheet("""
@@ -98,12 +85,6 @@ class QuizzesScreen(QWidget):
                 background-color: rgb(165, 190, 230);
             }
 
-            QPushButton:disabled {
-                background-color: rgb(225, 225, 225);
-                color: rgb(135, 135, 135);
-                border: 1px solid rgb(200, 200, 200);
-            }
-
             QProgressBar {
                 background-color: rgb(235, 235, 235);
                 border: 1px solid rgb(200, 200, 200);
@@ -132,16 +113,7 @@ class QuizzesScreen(QWidget):
         title_font.setBold(True)
         self.page_title.setFont(title_font)
 
-        self.page_subtitle = QLabel(
-            "Create a typed-answer quiz from one of your flashcard decks."
-        )
-        self.page_subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.page_subtitle.setStyleSheet(
-            "color: rgb(90, 90, 90); font-size: 13px;"
-        )
-
         main_layout.addWidget(self.page_title)
-        main_layout.addWidget(self.page_subtitle)
 
         content_layout = QHBoxLayout()
         content_layout.setSpacing(20)
@@ -171,7 +143,7 @@ class QuizzesScreen(QWidget):
         setup_title.setFont(setup_title_font)
 
         setup_description = QLabel(
-            "Choose an existing flashcard deck or import one "
+            "Choose an existing flashcard deck "
             "before starting your quiz."
         )
         setup_description.setWordWrap(True)
@@ -185,18 +157,7 @@ class QuizzesScreen(QWidget):
         self.deck_selector = QComboBox()
         self.deck_selector.addItem("Select a flashcard deck...")
 
-        self.import_deck_button = QPushButton(
-            "Import Flashcard Deck"
-        )
-
-        deck_help = QLabel(
-            "Imported and saved decks will appear in the list above."
-        )
-        deck_help.setWordWrap(True)
-        deck_help.setStyleSheet(
-            "color: rgb(110, 110, 110); font-size: 11px;"
-        )
-
+                
         question_count_label = QLabel("Number of Questions")
         question_count_label.setStyleSheet("font-weight: bold;")
 
@@ -208,18 +169,15 @@ class QuizzesScreen(QWidget):
         self.shuffle_questions_box = QCheckBox(
             "Shuffle question order"
         )
-        self.shuffle_questions_box.setChecked(True)
+        self.shuffle_questions_box.setChecked(False)
 
         self.start_quiz_button = QPushButton("Start Quiz")
-        self.start_quiz_button.setEnabled(False)
 
         layout.addWidget(setup_title)
         layout.addWidget(setup_description)
         layout.addSpacing(8)
         layout.addWidget(deck_label)
         layout.addWidget(self.deck_selector)
-        layout.addWidget(self.import_deck_button)
-        layout.addWidget(deck_help)
         layout.addSpacing(8)
         layout.addWidget(question_count_label)
         layout.addWidget(self.question_count_input)
@@ -295,7 +253,7 @@ class QuizzesScreen(QWidget):
         self.answer_input.setReadOnly(True)
 
         self.feedback_label = QLabel(
-            "Answer feedback will appear here."
+            "(Answer feedback will appear here)"
         )
         self.feedback_label.setAlignment(
             Qt.AlignmentFlag.AlignCenter
@@ -310,12 +268,10 @@ class QuizzesScreen(QWidget):
         self.submit_answer_button = QPushButton(
             "Submit Answer"
         )
-        self.submit_answer_button.setEnabled(False)
 
         self.next_question_button = QPushButton(
             "Next Question"
         )
-        self.next_question_button.setEnabled(False)
 
         button_layout.addWidget(self.submit_answer_button)
         button_layout.addStretch()
@@ -333,59 +289,6 @@ class QuizzesScreen(QWidget):
 
         return panel
 
-    def connect_buttons(self):
-        self.deck_selector.currentIndexChanged.connect(
-            self.update_start_button
-        )
-
-        self.import_deck_button.clicked.connect(
-            lambda: self.import_deck_requested.emit()
-        )
-
-        self.start_quiz_button.clicked.connect(
-            self.request_quiz_start
-        )
-
-        self.answer_input.returnPressed.connect(
-            self.submit_current_answer
-        )
-
-        self.submit_answer_button.clicked.connect(
-            self.submit_current_answer
-        )
-
-        self.next_question_button.clicked.connect(
-            lambda: self.next_question_requested.emit()
-        )
-
-    def update_start_button(self):
-        deck_is_selected = self.deck_selector.currentIndex() > 0
-        self.start_quiz_button.setEnabled(deck_is_selected)
-
-    def request_quiz_start(self):
-        if self.deck_selector.currentIndex() <= 0:
-            return
-
-        self.quiz_start_requested.emit(
-            self.deck_selector.currentText(),
-            self.question_count_input.value(),
-            self.shuffle_questions_box.isChecked(),
-        )
-
-    def submit_current_answer(self):
-        answer = self.answer_input.text().strip()
-
-        if answer == "":
-            self.feedback_label.setText(
-                "Please type an answer before submitting."
-            )
-            self.feedback_label.setStyleSheet(
-                "color: rgb(160, 90, 35); min-height: 32px;"
-            )
-            return
-
-        self.answer_submitted.emit(answer)
-
     # The methods below can be called by future backend code.
     def set_flashcard_decks(self, deck_names):
         self.deck_selector.blockSignals(True)
@@ -394,8 +297,6 @@ class QuizzesScreen(QWidget):
         self.deck_selector.addItems(deck_names)
         self.deck_selector.setCurrentIndex(0)
         self.deck_selector.blockSignals(False)
-
-        self.update_start_button()
 
     def show_question(self, question, current_number, total):
         self.progress_label.setText(
@@ -416,9 +317,6 @@ class QuizzesScreen(QWidget):
             "color: rgb(110, 110, 110); min-height: 32px;"
         )
 
-        self.submit_answer_button.setEnabled(True)
-        self.next_question_button.setEnabled(False)
-
     def show_answer_feedback(self, message, is_correct):
         if is_correct:
             color = "rgb(45, 125, 70)"
@@ -431,8 +329,6 @@ class QuizzesScreen(QWidget):
         )
 
         self.answer_input.setReadOnly(True)
-        self.submit_answer_button.setEnabled(False)
-        self.next_question_button.setEnabled(True)
 
     def update_score(self, score):
         self.score_label.setText(f"Score: {score}")
@@ -454,9 +350,6 @@ class QuizzesScreen(QWidget):
             "color: rgb(45, 125, 70); font-weight: bold; "
             "min-height: 32px;"
         )
-
-        self.submit_answer_button.setEnabled(False)
-        self.next_question_button.setEnabled(False)
 
 
 if __name__ == "__main__":
