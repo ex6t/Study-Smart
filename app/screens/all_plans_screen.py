@@ -198,15 +198,17 @@ class AllPlansScreen(QWidget):
             self.scroll_layout.addWidget(empty)
 
             return
-        
+        self.plan_cards = []
         for plan in plans:
 
             card = PlannerCardWidget(plan)
+            self.plan_cards.append(card)
             card.edit_requested.connect(self.edit_plan_requested.emit)
             card.delete_requested.connect(self.delete_plan_requested.emit)
             card.completed_changed.connect(self.completed_changed.emit)
             self.scroll_layout.addWidget(card)
         self.scroll_layout.addStretch()
+
 
     def clear_all_plans(self):
 
@@ -264,3 +266,9 @@ class AllPlansScreen(QWidget):
 
         if msg.clickedButton() == yes_button:
             self.clear_all_plans()
+
+    def scroll_to_plan(self, plan_id):
+        for card in self.plan_cards:
+            if card.plan["id"] == plan_id:
+                self.scroll_area.ensureWidgetVisible(card)
+                break

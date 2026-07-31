@@ -265,3 +265,41 @@ def get_plan(plan_id):
     connection.close()
 
     return plan
+
+
+def find_plan_by_title(user_id, title):
+
+    connection = get_connection()
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            id,
+            title,
+            content,
+            completed,
+            created_at
+
+        FROM planner
+
+        WHERE user_id = ?
+        AND LOWER(title) LIKE LOWER(?)
+
+        LIMIT 1
+        """,
+        (
+            user_id,
+            f"%{title}%"
+        ),
+    )
+
+    plan = cursor.fetchone()
+
+    connection.close()
+
+    if plan is None:
+        return None
+
+    return dict(plan)
