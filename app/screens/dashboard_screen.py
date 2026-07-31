@@ -7,7 +7,7 @@ from app.widgets.dashboard_button_widget import DashboardCardWidget
 from app.widgets.Searchbar_widget import SearchBarWidget
 from app.database.database import get_user_id
 from app.screens.all_notes_screen import AllNotesScreen
-from app.screens.flashcards_screen import FlashcardsScreen
+from app.screens.flashcards_screen import FlashcardCreationScreen
 from app.screens.planner_screen import PlannerScreen
 from app.screens.all_plans_screen import AllPlansScreen
 from app.database.notes import find_note_by_title
@@ -47,7 +47,8 @@ class Dashboard(QWidget):
         self.dashboard_home_page = self.create_dashboard_home_page()
         self.notes_page = NotesScreen(self.user_id)
 
-        self.flashcards_page = FlashcardsScreen(self.user_id)
+        # should link to all flashcards view instead
+        self.flashcards_page = FlashcardCreationScreen(self.user_id)
         self.quizzes_page = self.placeholder_page("Quizzes")
         self.planner_page = PlannerScreen(self.user_id)
         self.all_plans_page = AllPlansScreen(self.user_id)
