@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QInputDialog,
+    QDialog,
     QLineEdit,
     QMessageBox,
 )
@@ -138,6 +139,20 @@ class SettingsScreen(QWidget):
     def logout_user(self):
         end_session(self.window())
 
+    def get_password_input(self, title, prompt):
+        dialog = QInputDialog(self)
+        dialog.setWindowTitle(title)
+        dialog.setLabelText(prompt)
+        dialog.setTextEchoMode(QLineEdit.EchoMode.Password)
+        dialog.setMinimumWidth(500)
+        dialog.resize(500, dialog.sizeHint().height())
+
+        accepted = (
+            dialog.exec() == QDialog.DialogCode.Accepted
+        )
+
+        return dialog.textValue(), accepted
+
     def change_user_password(self):
         if self.user_id is None:
             QMessageBox.warning(
@@ -147,31 +162,25 @@ class SettingsScreen(QWidget):
             )
             return
 
-        current_password, accepted = QInputDialog.getText(
-            self,
+        current_password, accepted = self.get_password_input(
             "Change Password",
             "Enter your current password:",
-            QLineEdit.EchoMode.Password,
         )
 
         if not accepted:
             return
 
-        new_password, accepted = QInputDialog.getText(
-            self,
+        new_password, accepted = self.get_password_input(
             "Change Password",
             "Enter a new password:",
-            QLineEdit.EchoMode.Password,
         )
 
         if not accepted:
             return
 
-        confirm_password, accepted = QInputDialog.getText(
-            self,
+        confirm_password, accepted = self.get_password_input(
             "Change Password",
             "Confirm your new password:",
-            QLineEdit.EchoMode.Password,
         )
 
         if not accepted:
@@ -195,8 +204,9 @@ class SettingsScreen(QWidget):
             QMessageBox.information(
                 self,
                 "Password Changed",
-                message,
+                f"{message}\n\nYou will now be logged out.",
             )
+            end_session(self.window())
         else:
             QMessageBox.warning(
                 self,
@@ -230,11 +240,9 @@ class SettingsScreen(QWidget):
         if answer != QMessageBox.StandardButton.Yes:
             return
 
-        password, accepted = QInputDialog.getText(
-            self,
+        password, accepted = self.get_password_input(
             "Confirm Account Deletion",
             "Enter your password to delete the account:",
-            QLineEdit.EchoMode.Password,
         )
 
         if not accepted:
