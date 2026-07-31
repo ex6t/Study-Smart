@@ -110,3 +110,77 @@ def delete_note(note_id, user_id):
     connection.close()
 
     return deleted
+
+def update_note(note_id, user_id, title, content):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    current_time = datetime.now().strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
+
+    cursor.execute(
+        """
+        UPDATE notes
+        SET title = ?,
+            content = ?,
+            updated_at = ?
+        WHERE id = ?
+          AND user_id = ?
+        """,
+        (
+            title,
+            content,
+            current_time,
+            note_id,
+            user_id
+        )
+    )
+
+    connection.commit()
+
+    note_was_updated = cursor.rowcount > 0
+
+    connection.close()
+
+    return note_was_updated
+
+
+def find_note_by_title(user_id, title):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            id,
+            title,
+            content,
+            created_at,
+            updated_at
+        FROM notes
+        WHERE user_id = ?
+        AND LOWER(title) LIKE LOWER(?)
+        LIMIT 1
+        """,
+        (
+            user_id,
+            f"%{title}%"
+        )
+    )
+
+    row = cursor.fetchone()
+
+    connection.close()
+
+    if row is None:
+        return None
+
+    return {
+        "id": row[0],
+        "title": row[1],
+        "content": row[2],
+        "created_at": row[3],
+        "updated_at": row[4],
+    }

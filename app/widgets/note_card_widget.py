@@ -72,9 +72,9 @@ class NoteCardWidget(QWidget):
 
         date_box = QWidget()
         date_box.setStyleSheet("""
-        background:white;
-        border: 1px solid rgb(180,180,180);
-        border-radius:8px;
+            background:white;
+            border: 1px solid rgb(180,180,180);
+            border-radius:8px;
         """)
 
         date_layout = QHBoxLayout(date_box)
@@ -87,14 +87,23 @@ class NoteCardWidget(QWidget):
             heading_layout
         )
 
-        preview = self.note["content"]
+        preview = self.note["content"].strip()
 
-        if len(preview) > 120:
-            preview = preview[:120] + "..."
+        # Keep only the first 4 actual lines
+        preview_lines = preview.splitlines()[:4]
+        preview = "\n".join(preview_lines)
+
+        # Also limit very long paragraphs
+        if len(preview) > 180:
+            preview = preview[:180].rstrip() + "..."
+        elif len(self.note["content"].splitlines()) > 4:
+            preview += "\n..."
 
         self.preview_label = QLabel(preview)
         self.preview_label.setWordWrap(True)
 
+        # Prevent the preview from making the card taller
+        self.preview_label.setFixedHeight(80)
         self.preview_label.setStyleSheet("""
             color: rgb(40,40,40);
             background: white;
@@ -107,6 +116,7 @@ class NoteCardWidget(QWidget):
         )
 
         button_layout = QHBoxLayout()
+        button_layout.setContentsMargins(0, 4, 0, 0)
 
         button_layout.addStretch()
 
@@ -171,6 +181,8 @@ class NoteCardWidget(QWidget):
                 self.note
             )
         )
+        # Leave enough room for the preview and a small gap above the buttons.
+        self.setMinimumHeight(200)
 
         # Card styling
         self.setObjectName("NoteCard")

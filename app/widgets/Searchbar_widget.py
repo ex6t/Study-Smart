@@ -1,3 +1,4 @@
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import (
     QWidget,
     QHBoxLayout,
@@ -8,6 +9,7 @@ from PyQt6.QtWidgets import (
 
 class SearchBarWidget(QWidget):
 
+    search_requested = pyqtSignal(str)
     def __init__(self):
         super().__init__()
 
@@ -48,3 +50,11 @@ class SearchBarWidget(QWidget):
         """)
 
         layout.addWidget(self.search_bar)
+        self.search_bar.returnPressed.connect(self.emit_search)
+        
+    def emit_search(self):
+
+        text = self.search_bar.text().strip()
+
+        if text != "":
+            self.search_requested.emit(text)

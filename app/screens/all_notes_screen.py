@@ -268,10 +268,12 @@ class AllNotesScreen(QWidget):
             )
 
             return
-
+        
+        
+        self.note_cards = []
         for note in self.notes:
             card = NoteCardWidget(note)
-
+            self.note_cards.append(card)
             card.view_requested.connect(
                 self.view_note
             )
@@ -477,3 +479,9 @@ class AllNotesScreen(QWidget):
         """)
 
         msg.exec()
+
+    def scroll_to_note(self, note_id):
+        for card in self.note_cards:
+            if card.note["id"] == note_id:
+                self.scroll_area.ensureWidgetVisible(card)
+                break
