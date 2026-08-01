@@ -98,6 +98,7 @@ def update_flashcard(flashcard_id, deck_id, user_id, term, definition):
     finally:
         connection.close()
 
+# deletes a flashcard, given id
 def delete_flashcard(flashcard_id, user_id):
     connection = get_connection()
     cursor = connection.cursor()
@@ -118,6 +119,7 @@ def delete_flashcard(flashcard_id, user_id):
     finally:
         connection.close()
 
+# saves a new deck to db
 def save_deck(user_id, name):
     if name.strip() == "":
         return False, "Name cannot be empty"
@@ -193,6 +195,43 @@ def get_decks(user_id):
         )
     return decks
 
+# delete a deck and all of its associated flashcards
+def delete_deck(user_id, deck_id):
+    if deck_id is None:
+        return False, "No deck selected"
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            DELETE FROM flashcards
+            WHERE deck_id = ? AND user_id = ?
+            """,
+            (deck_id, user_id)
+        )
+        cursor.execute(
+            """
+            DELETE FROM decks
+            WHERE id = ? AND user_id = ?
+            """,
+            (deck_id, user_id)
+        )
+
+        connection.commit()
+        if cursor.rowcount > 0:
+            return True, "Deck deleted successfully"
+        else:
+            return False, "Deck not found"
+    except sqlite3.Error as e:
+        connection.rollback()
+        return False, f"Database error: {e}"
+    finally:
+        connection.close()
+
+
+# get all flashcards, optional parameter for specific deck
 def get_flashcards(user_id, deck_id=None):
     connection = get_connection()
     cursor = connection.cursor()
