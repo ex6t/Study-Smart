@@ -208,6 +208,7 @@ class Dashboard(QWidget):
         self.all_flashcards_page.edit_flashcard_requested.connect(self.open_edit_flashcard)
         self.flashcards_page.flashcard_updated.connect(self.open_all_flashcards)
         self.flashcards_page.view_flashcards_button.clicked.connect(self.open_all_flashcards)
+        self.all_flashcards_page.study_requested.connect(self.open_study_flashcards)
 
         self.all_plans_page.edit_plan_requested.connect(self.open_edit_plan)
         self.all_plans_page.delete_plan_requested.connect(self.delete_plan)
@@ -255,8 +256,9 @@ class Dashboard(QWidget):
     def open_edit_flashcard(self, flashcard):
         self.flashcards_page.load_flashcard_for_editing(flashcard)
         self.show_flashcards_page()
-    def open_study_flashcards(self):
-        self.study_flashcards_page.refresh_decks()
+
+    def open_study_flashcards(self, deck_id=None):
+        self.study_flashcards_page.refresh_decks(deck_id=deck_id)
         self.page_stack.setCurrentWidget(self.study_flashcards_page)
 
     def search_dashboard(self, search_text):

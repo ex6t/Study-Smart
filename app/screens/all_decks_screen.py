@@ -25,13 +25,15 @@ class AllFlashcardsScreen(QWidget):
     new_flashcard_requested = pyqtSignal()
     edit_flashcard_requested = pyqtSignal(dict)
 
+    study_requested = pyqtSignal(object)
+
     def __init__(self, user_id):
         super().__init__()
 
         self.user_id = user_id
         self.decks = []
         self.flashcards = []
-        self.selected_deck_id = None  # None means "All Decks"
+        self.selected_deck_id = None
 
         self.setup_ui()
         self.connect_buttons()
@@ -60,7 +62,7 @@ class AllFlashcardsScreen(QWidget):
             }
         """)
 
-        button_style = """
+        self.button_style = """
             QPushButton {
                 background-color: rgb(205,220,245);
                 color: black;
@@ -105,12 +107,20 @@ class AllFlashcardsScreen(QWidget):
 
         self.page_title.setFont(title_font)
 
+        self.study_button = QPushButton(
+            "Study"
+        )
+
         self.new_flashcard_button = QPushButton(
             "+ New Flashcard"
         )
 
+        self.study_button.setStyleSheet(
+            self.button_style
+        )
+
         self.new_flashcard_button.setStyleSheet(
-            button_style
+            self.button_style
         )
 
         heading_layout.addWidget(
@@ -118,6 +128,10 @@ class AllFlashcardsScreen(QWidget):
         )
 
         heading_layout.addStretch()
+
+        heading_layout.addWidget(
+            self.study_button
+        )
 
         heading_layout.addWidget(
             self.new_flashcard_button
@@ -188,9 +202,16 @@ class AllFlashcardsScreen(QWidget):
             self.new_flashcard_requested.emit
         )
 
+        self.study_button.clicked.connect(
+            self.study_button_pressed
+        )
+
         self.deck_filter_combo.currentIndexChanged.connect(
             self.deck_filter_changed
         )
+
+    def study_button_pressed(self):
+        self.study_requested.emit(self.selected_deck_id)
 
     def refresh_flashcards(self):
         self.decks = get_decks(self.user_id)
@@ -229,7 +250,7 @@ class AllFlashcardsScreen(QWidget):
 
         if not self.decks:
             empty_label = QLabel(
-                "No decks yet\n\nClick 'New Flashcard' to create a deck and your first card."
+                "No decks yet\n\nClick 'New Flashcard' to create a deck and your first card"
             )
 
             empty_label.setAlignment(
@@ -260,15 +281,14 @@ class AllFlashcardsScreen(QWidget):
         self.scroll_layout.addStretch()
 
     def add_deck_section(self, deck):
-        # --------------------------
-        # Deck Header
-        # --------------------------
         deck_cards = [
             flashcard for flashcard in self.flashcards
             if flashcard["deck_id"] == deck["deck_id"]
         ]
 
         deck_cards.sort(key=lambda flashcard: flashcard["term"].lower())
+
+        header_row = QHBoxLayout()
 
         header_label = QLabel(
             f'{deck["deck_name"]} ({len(deck_cards)})'
@@ -280,7 +300,17 @@ class AllFlashcardsScreen(QWidget):
 
         header_label.setFont(header_font)
 
-        self.scroll_layout.addWidget(header_label)
+        deck_study_button = QPushButton("Study this deck")
+        deck_study_button.setStyleSheet(self.button_style)
+        deck_study_button.clicked.connect(
+            lambda checked=False, deck_id=deck["deck_id"]: self.study_requested.emit(deck_id)
+        )
+
+        header_row.addWidget(header_label)
+        header_row.addStretch()
+        header_row.addWidget(deck_study_button)
+
+        self.scroll_layout.addLayout(header_row)
 
         if not deck_cards:
             empty_deck_label = QLabel("No flashcards in this deck yet.")
@@ -310,6 +340,15 @@ class AllFlashcardsScreen(QWidget):
 
             if widget is not None:
                 widget.deleteLater()
+            else:
+                # header_row is a layout, not a widget
+                layout = item.layout()
+                if layout is not None:
+                    while layout.count():
+                        sub_item = layout.takeAt(0)
+                        sub_widget = sub_item.widget()
+                        if sub_widget is not None:
+                            sub_widget.deleteLater()
 
     # --------------------------------------------------
     # Actions
