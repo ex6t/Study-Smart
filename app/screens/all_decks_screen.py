@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (
 from app.database.flashcards import (
     delete_flashcard,
     get_decks,
-    get_flashcards,
+    get_flashcards, delete_deck,
 )
 
 from app.widgets.flashcard_widget import (
@@ -307,9 +307,16 @@ class AllFlashcardsScreen(QWidget):
             lambda checked=False, deck_id=deck["deck_id"]: self.study_requested.emit(deck_id)
         )
 
+        deck_delete_button = QPushButton("Delete this deck")
+        deck_delete_button.setStyleSheet(self.button_style)
+        deck_delete_button.clicked.connect(
+            lambda checked=False, deck_id=deck["deck_id"]: self.confirm_delete_deck(deck)
+        )
+
         header_row.addWidget(header_label)
         header_row.addStretch()
         header_row.addWidget(deck_study_button)
+        header_row.addWidget(deck_delete_button)
 
         self.scroll_layout.addLayout(header_row)
 
@@ -462,6 +469,77 @@ class AllFlashcardsScreen(QWidget):
             self.styled_message(
                 "Delete Failed",
                 "The flashcard could not be deleted.",
+                "warning"
+            )
+
+    def confirm_delete_deck(self, deck):
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Delete Deck")
+        msg.setText(
+            f'Are you sure you want to delete "{deck["deck_name"]}"?'
+            f'\nThis will also delete all of its associated flashcards.'
+        )
+
+        msg.setIcon(QMessageBox.Icon.Question)
+
+        yes_button = msg.addButton(
+            QMessageBox.StandardButton.Yes
+        )
+        msg.addButton(
+            QMessageBox.StandardButton.No
+        )
+
+        msg.setStyleSheet("""
+            QWidget {
+                background-color: white;
+            }
+
+            QLabel {
+                color: black;
+                background: white;
+            }
+
+            QPushButton {
+                background-color: rgb(205,220,245);
+                color: black;
+                border: 1px solid rgb(170,185,210);
+                border-radius: 8px;
+                padding: 6px 14px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            QPushButton:hover {
+                background-color: rgb(185,205,240);
+            }
+
+            QPushButton:pressed {
+                background-color: rgb(165,190,230);
+            }
+        """)
+
+        msg.exec()
+
+        if msg.clickedButton() != yes_button:
+            return
+
+        success, message = delete_deck(
+            self.user_id,
+            deck["deck_id"]
+        )
+
+        if success:
+            self.refresh_flashcards()
+
+            self.styled_message(
+                "Deck Deleted",
+                message,
+                "info"
+            )
+        else:
+            self.styled_message(
+                "Delete Failed",
+                message,
                 "warning"
             )
 
