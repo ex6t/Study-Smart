@@ -50,6 +50,8 @@ Study-Smart/
 |
 |- main.py
 |
+|-- tests/
+|
 |-- app/
 |   |-- database/
 |   |-- screens/
@@ -113,14 +115,14 @@ After testing, a Pull Request was created and merged into the main branch.
 - AI-generated study recommendations
 - PDF note importing
 - Study timers
-- Better quiz quality and study games
+- Quiz Performance and Study Metrics
 - Cloud synchronization
-- Password recovery
+- Password recovery / security
 - Dark mode
 
 ---
 
-## Authors
+## Developers
 
 - Joshua Padilla
 - Kevin Davis
