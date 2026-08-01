@@ -91,6 +91,18 @@ On Windows you may need to use:
 python main.py
 ```
 
+### 5. (Optional) Install PyInstaller
+```bash
+pip install pyinstaller
+```
+
+### 6. Build a standalone executable
+```bash
+pyinstaller --onefile --windowed --name "Study Smart" main.py
+```
+
+The built executable will be in the 'dist/' folder.
+
 ---
 
 ## Git Workflow
