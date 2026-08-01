@@ -62,10 +62,57 @@ def save_flashcard(user_id, deck_id, term, definition):
             )
             VALUES (?, ?, ?, ?)
             """,
-            (user_id, term, definition)
+            (user_id, deck_id, term, definition)
         )
         connection.commit()
         return True, "Flashcard saved successfully"
+    except sqlite3.Error as e:
+        return False, f"Database error: {e}"
+    finally:
+        connection.close()
+
+def update_flashcard(flashcard_id, deck_id, user_id, term, definition):
+    if deck_id is None:
+        return False, "You must choose a deck to add the card to"
+    if term.strip() == "":
+        return False, "Term cannot be empty"
+    if definition.strip() == "":
+        return False, "Definition cannot be empty"
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            UPDATE flashcards
+            SET deck_id = ?, term = ?, definition = ?
+            WHERE id = ? AND user_id = ?
+            """,
+            (deck_id, term, definition, flashcard_id, user_id)
+        )
+        connection.commit()
+        return True, "Flashcard saved successfully"
+    except sqlite3.Error as e:
+        return False, f"Database error: {e}"
+    finally:
+        connection.close()
+
+def delete_flashcard(flashcard_id, user_id):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute(
+            """
+            DELETE FROM flashcards
+            WHERE id = ? AND user_id = ?
+            """,
+            (flashcard_id, user_id)
+        )
+        connection.commit()
+        if cursor.rowcount > 0:
+            return True, "Flashcard deleted successfully"
     except sqlite3.Error as e:
         return False, f"Database error: {e}"
     finally:
@@ -95,6 +142,7 @@ def save_deck(user_id, name):
     finally:
         connection.close()
 
+# returns dict of deck info (deck_id and name)
 def get_deck(user_id, name):
     connection = get_connection()
     cursor = connection.cursor()
@@ -113,8 +161,8 @@ def get_deck(user_id, name):
 
     if row is None: return None
     return {
-        "id": row[0],
-        "name": row[1],
+        "deck_id": row[0],
+        "deck_name": row[1],
     }
 
 # returns all decks for a user_id
@@ -139,8 +187,8 @@ def get_decks(user_id):
     for row in rows:
         decks.append(
             {
-                "id": row[0],
-                "name": row[1],
+                "deck_id": row[0],
+                "deck_name": row[1],
             }
         )
     return decks
@@ -153,10 +201,10 @@ def get_flashcards(user_id, deck_id=None):
         cursor.execute(
             """
             SELECT 
-                flashcards.id
-                flashcards.term
-                flashcards.definition
-                flashcards.deck_id
+                flashcards.id,
+                flashcards.term,
+                flashcards.definition,
+                flashcards.deck_id,
                 decks.name
             FROM flashcards
             JOIN decks ON flashcards.deck_id = decks.id
@@ -169,14 +217,14 @@ def get_flashcards(user_id, deck_id=None):
         cursor.execute(
             """
             SELECT
-                flashcards.id
-                flashcards.term
-                flashcards.definition
-                flashcards.deck_id
+                flashcards.id,
+                flashcards.term,
+                flashcards.definition,
+                flashcards.deck_id,
                 decks.name
             FROM flashcards
             JOIN decks ON flashcards.deck_id = decks.id
-            WHERE flashcards.user_id = ? AND flashcard.deck_id = ?
+            WHERE flashcards.user_id = ? AND flashcards.deck_id = ?
             ORDER BY flashcards.id DESC
             """,
             (user_id, deck_id)

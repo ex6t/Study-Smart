@@ -1,6 +1,6 @@
 import sys
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
     QLabel,
@@ -12,14 +12,18 @@ from PyQt6.QtWidgets import (
 )
 
 from app.database.flashcards import (
-    save_flashcard, get_flashcards, get_decks, save_deck, get_deck
+    save_flashcard, get_flashcards, get_decks, save_deck, get_deck, update_flashcard
 )
 
 
 class FlashcardCreationScreen(QWidget):
+
+    flashcard_updated = pyqtSignal()
+
     def __init__(self, user_id):
         super().__init__()
 
+        self.editing_flashcard_id = None
         self.setWindowTitle("Study Smart - Flashcards")
 
         self.user_id = user_id
@@ -119,46 +123,46 @@ class FlashcardCreationScreen(QWidget):
         # --------------------------------
         # Question Input
         # --------------------------------
-        question_label = QLabel("Question")
+        term_label = QLabel("Term")
 
         #Create text box
-        self.question_input = QTextEdit()
-        self.question_input.setPlaceholderText(
-            "Enter your flashcard question here..."
+        self.term_input = QTextEdit()
+        self.term_input.setPlaceholderText(
+            "Enter your flashcard term here..."
         )
 
         # Make the box 150 pixels tall (just a good size to where user can input good amount of text)
-        self.question_input.setMinimumHeight(150)
+        self.term_input.setMinimumHeight(150)
 
         # Add question label to the page
-        main_layout.addWidget(question_label)
+        main_layout.addWidget(term_label)
 
         # Add the question text box below the label
-        main_layout.addWidget(self.question_input)
+        main_layout.addWidget(self.term_input)
 
         # --------------------------------
         # Answer Input
         # --------------------------------
 
         # Create a label that says "Answer"
-        answer_label = QLabel("Answer")
+        definition_label = QLabel("Definition")
 
         # Create a large text box for the answer 
-        self.answer_input = QTextEdit()
+        self.definition_input = QTextEdit()
 
         # Add placeholder text for answer box
-        self.answer_input.setPlaceholderText(
+        self.definition_input.setPlaceholderText(
             "Enter your flashcard answer here..."
         )
 
         # Make answer box 150 pixels tall as well 
-        self.answer_input.setMinimumHeight(150)
+        self.definition_input.setMinimumHeight(150)
 
         # Add answer label to the page
-        main_layout.addWidget(answer_label)
+        main_layout.addWidget(definition_label)
 
         # Add answer input box below the label
-        main_layout.addWidget(self.answer_input)
+        main_layout.addWidget(self.definition_input)
 
         # --------------------------------
         # Message Label
@@ -229,23 +233,54 @@ class FlashcardCreationScreen(QWidget):
         self.new_deck_button.clicked.connect(self.new_deck_button_pressed)
 
     def save_flashcard_pressed(self):
-        question = self.question_input.toPlainText().strip()
-        answer = self.answer_input.toPlainText().strip()
+        term = self.term_input.toPlainText().strip()
+        definition = self.definition_input.toPlainText().strip()
         deck_id = self.deck_combo.currentData()
 
         if deck_id == None:
             self.message_label.setText("Please create or select a deck first")
             return
-        if question == "":
-            self.message_label.setText("Please enter your flashcard question")
+        if term == "":
+            self.message_label.setText("Please enter your flashcard term")
             return
-        if answer == "":
-            self.message_label.setText("Please enter your flashcard answer")
+        if definition == "":
+            self.message_label.setText("Please enter your flashcard definition")
             return
 
-        success, message = save_flashcard(self.user_id, deck_id, question, answer)
+        if self.editing_flashcard_id is None:
+            success, message = save_flashcard(self.user_id, deck_id, term, definition)
+        else:
+            success, message = update_flashcard(self.editing_flashcard_id, deck_id, self.user_id, term, definition)
         self.message_label.setText(message)
+        if success:
+            self.flashcard_updated.emit()
 
+    def reset_for_new_flashcard(self):
+        self.editing_flashcard_id = None
+
+        self.page_title.setText("Create Flashcard")
+        self.save_flashcard_button.setText("Save Flashcard")
+
+        self.term_input.clear()
+        self.definition_input.clear()
+
+        self.message_label.setText("")
+
+        self.refresh_decks()
+
+    def load_flashcard_for_editing(self, flashcard):
+        self.editing_flashcard_id = flashcard["id"]
+
+        self.page_title.setText("Edit Flashcard")
+        self.save_flashcard_button.setText("Update Flashcard")
+
+        self.term_input.setPlainText(flashcard["term"])
+        self.definition_input.setPlainText(flashcard["definition"])
+
+        self.message_label.setText("")
+
+        # makes sure the deck actually gets changed if its edited over
+        self.refresh_decks(deck_id=flashcard["deck_id"])
 
     def view_flashcards_pressed(self):
         flashcards = get_flashcards(self.user_id)
@@ -259,9 +294,14 @@ class FlashcardCreationScreen(QWidget):
         if not decks:
             self.deck_combo.addItem("No decks yet", None)
             return
+
         for deck in decks:
-            self.deck_combo.addItem(deck["name"], deck["id"])
-        # if its really laggy i can add a thing for only refreshing one deck type but i think its fine as is
+            self.deck_combo.addItem(deck["deck_name"], deck["deck_id"])
+
+        if deck_id is not None:
+            index = self.deck_combo.findData(deck_id)
+            if index != -1:
+                self.deck_combo.setCurrentIndex(index)
 
     def new_deck_button_pressed(self):
         name, ok = QInputDialog.getText(

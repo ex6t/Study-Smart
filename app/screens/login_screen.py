@@ -177,7 +177,6 @@ class LoginView(QWidget):
         self.close()
 
 if __name__ == "__main__":
-    create_users_table()
     app = QApplication(sys.argv)
 
     window = LoginView()
