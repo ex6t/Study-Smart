@@ -114,6 +114,7 @@ class StudyFlashcardsScreen(QWidget):
 
         heading_layout.addWidget(deck_label)
         heading_layout.addWidget(self.deck_combo)
+        self.deck_combo.setStyleSheet("background-color: white;")
 
         main_layout.addLayout(heading_layout)
 
@@ -135,13 +136,11 @@ class StudyFlashcardsScreen(QWidget):
         # --------------------------
 
         main_layout.addStretch()
-
         self.card_frame = ClickableCardFrame()
         self.card_frame.setFixedHeight(280)
         self.card_frame.setStyleSheet("""
             QFrame {
                 background-color: white;
-                border: 1px solid rgb(190,190,190);
                 border-radius: 16px;
             }
         """)

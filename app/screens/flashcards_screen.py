@@ -109,7 +109,7 @@ class FlashcardCreationScreen(QWidget):
         deck_row = QHBoxLayout()
 
         self.deck_combo = QComboBox()
-
+        self.deck_combo.setStyleSheet("background-color: white;")
         self.new_deck_button = QPushButton("New Deck")
 
         deck_row.addWidget(self.deck_combo)
@@ -127,6 +127,16 @@ class FlashcardCreationScreen(QWidget):
 
         #Create text box
         self.term_input = QTextEdit()
+        self.term_input.setStyleSheet("""
+            QTextEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
+
         self.term_input.setPlaceholderText(
             "Enter your flashcard term here..."
         )
@@ -149,6 +159,15 @@ class FlashcardCreationScreen(QWidget):
 
         # Create a large text box for the answer 
         self.definition_input = QTextEdit()
+        self.definition_input.setStyleSheet("""
+            QTextEdit {
+                background-color: white;
+                color: black;
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
 
         # Add placeholder text for answer box
         self.definition_input.setPlaceholderText(

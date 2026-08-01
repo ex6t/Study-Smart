@@ -227,6 +227,7 @@ class AllFlashcardsScreen(QWidget):
         self.deck_filter_combo.clear()
 
         self.deck_filter_combo.addItem("All Decks", None)
+        self.deck_filter_combo.setStyleSheet("background-color: white;")
 
         for deck in self.decks:
             self.deck_filter_combo.addItem(deck["deck_name"], deck["deck_id"])
