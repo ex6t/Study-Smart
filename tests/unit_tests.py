@@ -1,7 +1,11 @@
+import sys
 import unittest
 from unittest.mock import Mock, patch
 
+from PyQt6.QtWidgets import QApplication, QLabel
+
 from app.screens.flashcards_screen import FlashcardCreationScreen
+from app.screens.frontpageFE import WelcomeWindow
 from app.screens.login_screen import LoginView
 from app.screens.settings_screen import SettingsScreen
 from app.screens.planner_screen import PlannerScreen
@@ -169,6 +173,56 @@ class FlashcardCreationTests(unittest.TestCase):
         card.delete_requested.emit(flashcard)
 
         card.delete_requested.emit.assert_called_once_with(flashcard)
+
+
+class ScreenInitializationTests(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.app = QApplication.instance()
+        if cls.app is None:
+            cls.app = QApplication(sys.argv)
+
+    @patch("app.screens.flashcards_screen.get_decks", return_value=[])
+    def test_flashcards_screen_initialization(self, get_decks_mock):
+        screen = FlashcardCreationScreen(user_id=1)
+
+        self.assertEqual(screen.windowTitle(), "Study Smart - Flashcards")
+        self.assertEqual(screen.width(), 1200)
+        self.assertEqual(screen.height(), 800)
+        self.assertEqual(screen.page_title.text(), "Create Flashcard")
+        self.assertEqual(
+            screen.term_input.placeholderText(),
+            "Enter your flashcard term here...",
+        )
+        self.assertEqual(
+            screen.definition_input.placeholderText(),
+            "Enter your flashcard answer here...",
+        )
+        self.assertEqual(screen.view_flashcards_button.text(), "View Flashcards")
+        self.assertEqual(screen.save_flashcard_button.text(), "Save Flashcard")
+        self.assertEqual(screen.message_label.text(), "")
+
+        screen.close()
+
+    def test_welcome_window_initialization(self):
+        screen = WelcomeWindow()
+        screen.show()
+
+        self.assertEqual(screen.windowTitle(), "Study Smart")
+        self.assertEqual(screen.width(), 1200)
+        self.assertEqual(screen.height(), 800)
+
+        labels = screen.findChildren(QLabel)
+        self.assertTrue(
+            any(label.text() == "Welcome to Study Smart" for label in labels)
+        )
+        self.assertEqual(screen.signup_button.text(), "Sign Up")
+        self.assertEqual(screen.login_button.text(), "Log In")
+        self.assertTrue(screen.signup_button.isVisible())
+        self.assertTrue(screen.login_button.isVisible())
+
+        screen.close()
 
 if __name__ == "__main__":
     unittest.main()
