@@ -1,13 +1,16 @@
 from PyQt6.QtWidgets import QWidget, QFrame, QHBoxLayout, QVBoxLayout, QStackedWidget, QApplication, QLabel, QMainWindow, QMessageBox
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
+
+from app.screens.all_decks_screen import AllFlashcardsScreen
+from app.screens.flashcard_study_screen import StudyFlashcardsScreen
+from app.screens.flashcards_screen import FlashcardCreationScreen
 from app.screens.notes_screen import NotesScreen
 from app.widgets.sidebar_widget import SidebarWidget
 from app.widgets.dashboard_button_widget import DashboardCardWidget
 from app.widgets.Searchbar_widget import SearchBarWidget
 from app.database.database import get_user_id
 from app.screens.all_notes_screen import AllNotesScreen
-from app.screens.flashcards_screen import FlashcardsScreen
 from app.screens.quizzes_screen import QuizzesScreen
 from app.screens.planner_screen import PlannerScreen
 from app.screens.all_plans_screen import AllPlansScreen
@@ -48,7 +51,9 @@ class Dashboard(QWidget):
         self.dashboard_home_page = self.create_dashboard_home_page()
         self.notes_page = NotesScreen(self.user_id)
 
-        self.flashcards_page = FlashcardsScreen()
+        self.flashcards_page = FlashcardCreationScreen(self.user_id)
+        self.all_flashcards_page = AllFlashcardsScreen(self.user_id)
+        self.study_flashcards_page = StudyFlashcardsScreen(self.user_id)
         self.quizzes_page = QuizzesScreen(self.user_id)
         self.planner_page = PlannerScreen(self.user_id)
         self.all_plans_page = AllPlansScreen(self.user_id)
@@ -73,6 +78,10 @@ class Dashboard(QWidget):
         self.page_stack.addWidget(self.all_notes_page)
         #All Plans - 7
         self.page_stack.addWidget(self.all_plans_page)
+        #All Flashcards - 8
+        self.page_stack.addWidget(self.all_flashcards_page)
+        #Flashcard Study - 9
+        self.page_stack.addWidget(self.study_flashcards_page)
         #start with dashboard page
         self.page_stack.setCurrentWidget(self.dashboard_home_page)
 
@@ -178,13 +187,13 @@ class Dashboard(QWidget):
     def connect_button_presses(self):
         self.sidebar.dashboard_button.clicked.connect(self.show_dashboard_page)
         self.sidebar.notes_button.clicked.connect(self.open_all_notes)
-        self.sidebar.flashcards_button.clicked.connect(self.show_flashcards_page)
+        self.sidebar.flashcards_button.clicked.connect(self.open_all_flashcards)
         self.sidebar.quizzes_button.clicked.connect(self.show_quizzes_page)
         self.sidebar.planner_button.clicked.connect(self.open_all_plans)
         self.sidebar.settings_button.clicked.connect(self.show_settings_page)
 
         self.notes_card.action_button.clicked.connect(self.open_all_notes)
-        self.flashcards_card.action_button.clicked.connect(self.show_flashcards_page)
+        self.flashcards_card.action_button.clicked.connect(self.open_all_flashcards)
         self.quizzes_card.action_button.clicked.connect(self.show_quizzes_page)
         self.planner_card.action_button.clicked.connect(self.open_all_plans)
         self.planner_page.view_all_plans_button.clicked.connect(self.open_all_plans)
@@ -195,6 +204,11 @@ class Dashboard(QWidget):
         self.all_notes_page.edit_note_requested.connect(self.open_edit_note)
         self.notes_page.note_updated.connect(self.open_all_notes)
 
+        self.all_flashcards_page.new_flashcard_requested.connect(self.open_new_flashcard)
+        self.all_flashcards_page.edit_flashcard_requested.connect(self.open_edit_flashcard)
+        self.flashcards_page.flashcard_updated.connect(self.open_all_flashcards)
+        self.flashcards_page.view_flashcards_button.clicked.connect(self.open_all_flashcards)
+        self.all_flashcards_page.study_requested.connect(self.open_study_flashcards)
 
         self.all_plans_page.edit_plan_requested.connect(self.open_edit_plan)
         self.all_plans_page.delete_plan_requested.connect(self.delete_plan)
@@ -207,6 +221,7 @@ class Dashboard(QWidget):
     def show_notes_page(self):
         self.page_stack.setCurrentWidget(self.notes_page)
     def show_flashcards_page(self):
+        self.flashcards_page.refresh_decks()
         self.page_stack.setCurrentWidget(self.flashcards_page)
     def show_quizzes_page(self):
         self.page_stack.setCurrentWidget(self.quizzes_page)
@@ -233,6 +248,19 @@ class Dashboard(QWidget):
     def update_completed(self, plan, completed):
         update_completed(plan["id"],int(completed))
         self.open_all_plans()
+    def open_all_flashcards(self):
+        self.all_flashcards_page.refresh_flashcards()
+        self.page_stack.setCurrentWidget(self.all_flashcards_page)
+    def open_new_flashcard(self):
+        self.show_flashcards_page()
+    def open_edit_flashcard(self, flashcard):
+        self.flashcards_page.load_flashcard_for_editing(flashcard)
+        self.show_flashcards_page()
+
+    def open_study_flashcards(self, deck_id=None):
+        self.study_flashcards_page.refresh_decks(deck_id=deck_id)
+        self.page_stack.setCurrentWidget(self.study_flashcards_page)
+
     def search_dashboard(self, search_text):
 
         note = find_note_by_title(
