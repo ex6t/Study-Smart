@@ -171,7 +171,7 @@ class FlashcardCreationScreen(QWidget):
 
         # Add placeholder text for answer box
         self.definition_input.setPlaceholderText(
-            "Enter your flashcard answer here..."
+            "Enter your flashcard definition here..."
         )
 
         # Make answer box 150 pixels tall as well 
