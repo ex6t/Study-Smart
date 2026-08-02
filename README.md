@@ -98,7 +98,7 @@ pip install -U pyinstaller
 
 ### 6. Build a standalone executable
 ```bash
-python -m PyInstaller --onefile --windowed --name "Study Smart" main.py
+python -m PyInstaller --windowed --name "Study Smart" main.py
 ```
 
 The built executable will be in the 'dist/' folder.
