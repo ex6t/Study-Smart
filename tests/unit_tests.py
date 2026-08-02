@@ -197,7 +197,7 @@ class ScreenInitializationTests(unittest.TestCase):
         )
         self.assertEqual(
             screen.definition_input.placeholderText(),
-            "Enter your flashcard answer here...",
+            "Enter your flashcard definition here...",
         )
         self.assertEqual(screen.view_flashcards_button.text(), "View Flashcards")
         self.assertEqual(screen.save_flashcard_button.text(), "Save Flashcard")
