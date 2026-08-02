@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
+from app.screens.flashcards_screen import FlashcardCreationScreen
 from app.screens.login_screen import LoginView
 from app.screens.settings_screen import SettingsScreen
 from app.screens.planner_screen import PlannerScreen
@@ -125,6 +126,48 @@ class AllPlansScreenTests(unittest.TestCase):
         screen.delete_plan_requested.emit(plan)
 
         screen.delete_plan_requested.emit.assert_called_once_with(plan)
+
+class FlashcardCreationTests(unittest.TestCase):
+    @patch("app.screens.flashcards_screen.save_flashcard",
+           return_value=(True, "Flashcards saved successfully"),
+           )
+    def test_create_flashcard(self, save_flashcard_mock):
+        screen = Mock()
+        screen.user_id = 1
+        screen.editing_flashcard_id = None
+
+        screen.term_input.toPlainText.return_value = "What is the capital of California?"
+        screen.definition_input.toPlainText.return_value = "Sacramento"
+        screen.deck_combo.currentData.return_value = 3
+
+        screen.message_label = Mock()
+        screen.flashcard_updated = Mock()
+
+        FlashcardCreationScreen.save_flashcard_pressed(screen)
+
+        save_flashcard_mock.assert_called_once_with(
+            1, 3, "What is the capital of California?", "Sacramento"
+        )
+
+        screen.flashcard_updated.emit.assert_called_once()
+
+    def test_delete_flashcard(self):
+        card = Mock()
+
+        card.delete_requested = Mock()
+        card.delete_requested.emit = Mock()
+
+        flashcard = {
+            "id": 7,
+            "term": "What is the capital of California?",
+            "definition": "Sacramento",
+            "deck_id": 3,
+            "deck_name": "Geography",
+        }
+
+        card.delete_requested.emit(flashcard)
+
+        card.delete_requested.emit.assert_called_once()
 
 if __name__ == "__main__":
     unittest.main()
