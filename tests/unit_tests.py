@@ -128,6 +128,7 @@ class AllPlansScreenTests(unittest.TestCase):
         screen.delete_plan_requested.emit.assert_called_once_with(plan)
 
 class FlashcardCreationTests(unittest.TestCase):
+
     @patch("app.screens.flashcards_screen.save_flashcard",
            return_value=(True, "Flashcards saved successfully"),
            )
@@ -167,7 +168,7 @@ class FlashcardCreationTests(unittest.TestCase):
 
         card.delete_requested.emit(flashcard)
 
-        card.delete_requested.emit.assert_called_once()
+        card.delete_requested.emit.assert_called_once_with(flashcard)
 
 if __name__ == "__main__":
     unittest.main()
