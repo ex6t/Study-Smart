@@ -59,7 +59,11 @@ Study-Smart/
 ```
 ---
 
-## Running the Project
+# Running the Project
+
+## Requirements
+
+- Python 3.9 or later
 
 ### 1. Clone the repository
 
