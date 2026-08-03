@@ -105,6 +105,17 @@ The built executable will be in the 'dist/' folder.
 
 ---
 
+## Build/Run the Unit Tests
+
+### In the Project Root, Run:
+``` bash
+python3 -m unittest tests.unit_tests -v
+```
+
+Running this command will build and run the unit tests and output results into the terminal.
+
+---
+
 ## Git Workflow
 
 ```bash
